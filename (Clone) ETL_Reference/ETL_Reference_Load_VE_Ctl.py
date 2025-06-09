@@ -33,8 +33,8 @@
 #-----------
 # DBX Parms
 #-----------
-dbutils.widgets.text('s3_location', 's3://gia-stg-oh-ue1-data-raw/haven/haven/inbound/VE_EDW/dt=')  
-dbutils.widgets.text('received_date', '2024-03-20')  
+dbutils.widgets.text('s3_location', 's3://gia-stg-oh-ue1-data-raw/haven/inbound/VE_EDW/process/ETL_Ref') 
+# dbutils.widgets.text('received_date', '2024-03-20')  
 dbutils.widgets.text('catalog', 'oh_apm_stg')  
 dbutils.widgets.text('schema_name', 'archive_vendor_extracts')  
 dbutils.widgets.text('Clng_Month_Gap', '-120')
@@ -70,7 +70,7 @@ EDW_CtlLog_hist = dbutils.widgets.get('EDW_CtlLog_hist')
 #-----------
 Clng_Month_Gap = dbutils.widgets.get('Clng_Month_Gap')
 s3_location = dbutils.widgets.get('s3_location')
-received_date = dbutils.widgets.get('received_date')
+# received_date = dbutils.widgets.get('received_date')
 catalog = dbutils.widgets.get('catalog')
 schema_name = dbutils.widgets.get('schema_name')
 
@@ -79,7 +79,7 @@ schema_name = dbutils.widgets.get('schema_name')
 
 # DBTITLE 1,Show Parms
 print("Location Path:", s3_location)
-print("Location Dte:", received_date)
+# print("Location Dte:", received_date)
 print("catalog:", catalog)
 print("schema:", schema_name)
 print("Cleaning Month Gap:", Clng_Month_Gap)
@@ -110,7 +110,7 @@ print(EDW_CtlLog_hist)
 
 # DBTITLE 1,Load EDW Control Log Temporary Table
 from pyspark.sql.types import StructType, StructField, StringType, DecimalType, DateType, TimestampType
-s3_location_final = f"{s3_location}{received_date}/*.REFERENCE.WEEKLY.*.ctl" 
+s3_location_final = f"{s3_location}/*.REFERENCE.WEEKLY.*.ctl" 
 print(s3_location_final)
 # Define the schema
 schema = StructType([
