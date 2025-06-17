@@ -3,12 +3,11 @@
 #-----------
 # DBX Parms
 #-----------
-dbutils.widgets.text('s3_location', 's3://gia-stg-oh-ue1-data-raw/haven/inbound/VE_EDW/process/ETL_Ref')  
-# dbutils.widgets.text('received_date', '2024-02-27')  
+dbutils.widgets.text('s3_location', 's3://gia-stg-oh-ue1-data-raw/haven/inbound/VE_EDW')  
+dbutils.widgets.text('received_date', '/process/ETL_Ref')  
 dbutils.widgets.text('catalog', 'oh_apm_stg')  
 dbutils.widgets.text('schema_name', 'archive_vendor_extracts')  
 dbutils.widgets.text('Clng_Month_Gap', '-120')
-
 
 #-------------------
 # EDW Staging Tables
@@ -30,7 +29,7 @@ dbutils.widgets.text('VEN130FA_hist', 'EDW_VEN130FA_Historic')
 #-----------
 Clng_Month_Gap = dbutils.widgets.get('Clng_Month_Gap')
 s3_location = dbutils.widgets.get('s3_location')
-# received_date = dbutils.widgets.get('received_date')
+received_date = dbutils.widgets.get('received_date')
 catalog = dbutils.widgets.get('catalog')
 schema_name = dbutils.widgets.get('schema_name')
 
@@ -44,12 +43,11 @@ VEN130FA = dbutils.widgets.get('VEN130FA')
 #--------------------
 VEN130FA_hist = dbutils.widgets.get('VEN130FA_hist')
 
-
 # COMMAND ----------
 
 # DBTITLE 1,Show Parms
 print("Location Path:", s3_location)
-# print("Location Dte:", received_date)
+print("Location Dte:", received_date)
 print("catalog:", catalog)
 print("schema:", schema_name)
 print("Cleaning Month Gap:", Clng_Month_Gap)
@@ -89,7 +87,7 @@ print(VEN130FA_hist)
 
 # DBTITLE 1,Load EDW VEN130FA Staging Table
 from pyspark.sql.types import StructType, StructField, StringType, DecimalType, DateType, TimestampType
-s3_location_final = f"{s3_location}/*130FA*" 
+s3_location_final = f"{s3_location}{received_date}/*130FA*" 
 print(s3_location_final)
 # Define the schema
 schema = StructType([
