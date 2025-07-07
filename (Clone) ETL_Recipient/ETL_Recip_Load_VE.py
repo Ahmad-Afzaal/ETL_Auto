@@ -31,12 +31,12 @@
 # COMMAND ----------
 
 # DBTITLE 1,Parameters
-dbutils.widgets.text('received_date', '2024-03-20')
+dbutils.widgets.text('received_date', '/process/ETL_Rec')
 dbutils.widgets.text('catalog', 'oh_apm_stg')
 dbutils.widgets.text('schema_name', 'archive_vendor_extracts')
 dbutils.widgets.text('ven_114fa', 'EDW_ven114fa_staging')
 dbutils.widgets.text('ven_115fa', 'EDW_ven115fa_staging')
-dbutils.widgets.text('s3_location', 's3://gia-stg-oh-ue1-data-raw/haven/inbound/VE_EDW/weekly/dt=')
+dbutils.widgets.text('s3_location', 's3://gia-stg-oh-ue1-data-raw/haven/inbound/VE_EDW')
 dbutils.widgets.text('ven_114fa_hist', 'EDW_ven114fa_historic')
 dbutils.widgets.text('ven_115fa_hist', 'EDW_ven115fa_historic')
 dbutils.widgets.text('Clng_Month_Gap', '-120')
