@@ -31,7 +31,7 @@
 
 # DBTITLE 1,Parameters
 dbutils.widgets.text('catalog', 'oh_apm_stg')
-dbutils.widgets.text('schema_name', 'archive_vendor_extracts')
+dbutils.widgets.text('schema_name', 'vendor_extracts')
 dbutils.widgets.text('ven_114fa', 'EDW_ven114fa_staging')
 dbutils.widgets.text('ven_115fa', 'EDW_ven115fa_staging')
 dbutils.widgets.text('VEN130FA', 'EDW_VEN130FA_Staging')

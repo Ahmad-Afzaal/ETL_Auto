@@ -4,7 +4,7 @@
 # DBX Parms
 #-----------
 dbutils.widgets.text('catalog', 'oh_apm_stg')
-dbutils.widgets.text('schema_name', 'archive_vendor_extracts')
+dbutils.widgets.text('schema_name', 'vendor_extracts')
 dbutils.widgets.text('EDW_CtlLog', 'EDW_CtlLog_Recip_Staging')
 
 catalog = dbutils.widgets.get('catalog')
