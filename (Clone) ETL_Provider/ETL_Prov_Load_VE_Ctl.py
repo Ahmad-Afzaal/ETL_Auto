@@ -1,12 +1,16 @@
 # Databricks notebook source
+dbutils.widgets.removeAll()
+
+# COMMAND ----------
+
 # DBTITLE 1,Parameters
 #-----------
 # DBX Parms
 #-----------
-dbutils.widgets.text('s3_location', 's3://gia-stg-oh-ue1-data-raw/haven/haven/inbound/VE_EDW/dt=')  
-dbutils.widgets.text('received_date', '2024-04-02')  
+dbutils.widgets.text('s3_location', 's3://gia-stg-oh-ue1-data-raw/haven/inbound/VE_EDW')
+dbutils.widgets.text('received_date', '/process/ETL_Prv')  
 dbutils.widgets.text('catalog', 'oh_apm_stg')  
-dbutils.widgets.text('schema_name', 'archive_vendor_extracts')  
+dbutils.widgets.text('schema_name', 'vendor_extracts')  
 dbutils.widgets.text('Clng_Month_Gap', '-120')
   
 #-------------------
