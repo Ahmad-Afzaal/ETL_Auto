@@ -1,0 +1,107 @@
+resources:
+  jobs:
+    ETL_Clms_Med_Analytics:
+      name: ETL_Clms_Med_Analytics
+      email_notifications:
+        on_failure:
+          - jaime.zavala@gainwelltechnologies.com
+        no_alert_for_skipped_runs: true
+      tasks:
+        - task_key: ETL_Clms_Med_Analytics
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/ETL_Clms_Med_Analytics
+            base_parameters:
+              VEN12403FA: EDW_VEN12403FA_Staging
+              Med_Analytics_stg: EDW_temp_Med_Analytics_staging
+              cl_med: EDW_temp_cl_med
+              catalog: oh_apm_stg
+              cl_med_stg: EDW_temp_cl_med_staging
+              Med_Analytics: EDW_temp_Med_Analytics
+              VEN117FA1: EDW_VEN117FA1_Staging
+              VEN12401FA: EDW_VEN12401FA_Staging
+              VEN10001FA: EDW_VEN10001FA_Staging
+              VEN10005FA: EDW_VEN10005FA_Staging
+              hipaa_820_raw: hipaa_820_raw
+              VEN100FA: EDW_VEN100FA_Staging
+              schema_name: vendor_extracts
+              VEN12501FA: EDW_VEN12501FA_Staging
+              CleanDstntTblsFlag: T
+              VEN10004FA: EDW_VEN10004FA_Staging
+              VEN117FA4: EDW_VEN117FA4_Staging
+              VEN10007FA: EDW_VEN10007FA_Staging
+              VEN117FA11: EDW_VEN117FA11_Staging
+              schema_name_mc: managed_care
+            source: GIT
+          new_cluster:
+            cluster_name: ""
+            spark_version: 16.1.x-scala2.12
+            spark_conf:
+              spark.databricks.driver.ipykernel.commChannelEnabled: "False"
+            aws_attributes:
+              first_on_demand: 1
+              availability: SPOT_WITH_FALLBACK
+              zone_id: auto
+              instance_profile_arn: arn:aws:iam::721214004216:instance-profile/gia-stg-oh-ue1-data-ec2role
+              spot_bid_price_percent: 100
+              ebs_volume_count: 0
+            node_type_id: i4i.8xlarge
+            custom_tags:
+              Company: gainwell technologies
+              Env: stg
+              Aws_Account_Number: "721214004216"
+              Email: support-gia-de@mygainwell.onmicrosoft.com
+              Tenant: oh_haven
+              Team: gia-de
+              Project: gia
+              Infra_Service: fbae79be939839d0ca737f4badba10d8
+              Product: analytics
+              App_Service: 3401e33d9367e5508cf7324e1dba1059
+              Aws_Region: us-east-1
+            enable_elastic_disk: true
+            policy_id: 0019F7C702C5E025
+            data_security_mode: SINGLE_USER
+            runtime_engine: PHOTON
+            autoscale:
+              min_workers: 2
+              max_workers: 20
+      git_source:
+        git_url: https://github.com/mygainwell/act-oh-apm-databricks
+        git_provider: gitHub
+        git_branch: stage
+      parameters:
+        - name: catalog
+          default: oh_apm_stg
+        - name: schema_name
+          default: archive_vendor_extracts
+        - name: schema_name_mc
+          default: archive_managed_care
+        - name: VEN100FA
+          default: EDW_VEN100FA_Staging
+        - name: VEN10001FA
+          default: EDW_VEN10001FA_Staging
+        - name: VEN10004FA
+          default: EDW_VEN10004FA_Staging
+        - name: VEN10005FA
+          default: EDW_VEN10005FA_Staging
+        - name: VEN10007FA
+          default: EDW_VEN10007FA_Staging
+        - name: VEN12401FA
+          default: EDW_VEN12401FA_Staging
+        - name: VEN12403FA
+          default: EDW_VEN12403FA_Staging
+        - name: VEN117FA1
+          default: EDW_VEN117FA1_Staging
+        - name: VEN117FA4
+          default: EDW_VEN117FA4_Staging
+        - name: VEN117FA11
+          default: EDW_VEN117FA11_Staging
+        - name: hipaa_820_raw
+          default: hipaa_820_raw
+        - name: cl_med_stg
+          default: EDW_temp_cl_med_staging
+        - name: cl_med
+          default: EDW_temp_cl_med
+        - name: Med_Analytics_stg
+          default: EDW_temp_Med_Analytics_staging
+        - name: Med_Analytics
+          default: EDW_temp_Med_Analytics

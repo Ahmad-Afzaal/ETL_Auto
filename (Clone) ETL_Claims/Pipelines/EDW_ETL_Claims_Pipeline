@@ -1,0 +1,436 @@
+resources:
+  jobs:
+    EDW_ETL_Claims:
+      name: EDW ETL Claims
+      tasks:
+        - task_key: EDW_ETL_Clms_Load_VE
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/ETL_Clms_Load_VE
+            base_parameters:
+              VEN12403FA: EDW_VEN12403FA_Staging
+              VEN12401FA_hist: EDW_VEN12401FA_Historic
+              VEN12403FA_hist: EDW_VEN12403FA_Historic
+              catalog: oh_apm_stg
+              received_date: 2024-08-14
+              VEN12404FA_hist: EDW_VEN12404FA_Historic
+              Clng_Month_Gap: "-120"
+              VEN10002FA_hist: EDW_VEN10002FA_Historic
+              VEN10009FA_hist: EDW_VEN10009FA_Historic
+              VEN10003FA: EDW_VEN10003FA_Staging
+              VEN10008FA: EDW_VEN10008FA_Staging
+              VEN10007FA_hist: EDW_VEN10007FA_Historic
+              VEN12401FA: EDW_VEN12401FA_Staging
+              VEN10001FA: EDW_VEN10001FA_Staging
+              VEN12404FA: EDW_VEN12404FA_Staging
+              VEN10005FA: EDW_VEN10005FA_Staging
+              VEN10003FA_hist: EDW_VEN10003FA_Historic
+              VEN12501FA_hist: EDW_VEN12501FA_Historic
+              VEN100FA: EDW_VEN100FA_Staging
+              schema_name: vendor_extracts
+              VEN10008FA_hist: EDW_VEN10008FA_Historic
+              VEN12501FA: EDW_VEN12501FA_Staging
+              VEN10004FA: EDW_VEN10004FA_Staging
+              VEN12301FA_hist: EDW_VEN12301FA_Historic
+              VEN10009FA: EDW_VEN10009FA_Staging
+              VEN10005FA_hist: EDW_VEN10005FA_Historic
+              VEN10006FA_hist: EDW_VEN10006FA_Historic
+              VEN10001FA_hist: EDW_VEN10001FA_Historic
+              s3_location: s3://gia-stg-oh-ue1-data-raw/haven/inbound/VE_EDW/weekly/dt=
+              VEN100FA_hist: EDW_VEN100FA_Historic
+              VEN10004FA_hist: EDW_VEN10004FA_Historic
+              VEN10006FA: EDW_VEN10006FA_Staging
+              VEN10007FA: EDW_VEN10007FA_Staging
+              VEN10002FA: EDW_VEN10002FA_Staging
+              VEN12301FA: EDW_VEN12301FA_Staging
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: EDW_ETL_Clms_DxPx
+          depends_on:
+            - task_key: EDW_ETL_Clms_Load_VE
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/ETL_Clms_DxPxCodes_Analytics
+            base_parameters:
+              catalog: oh_apm_stg
+              VEN10001FA: EDW_VEN10001FA_Staging
+              VEN100FA: EDW_VEN100FA_Staging
+              schema_name: vendor_extracts
+              CleanDstntTblsFlag: F
+              DxPx_Analytics: EDW_temp_DiagSurgProcValCodes_Analytics
+              VEN12301FA: EDW_VEN12301FA_Staging
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: DxPx_Vldtn_Issue_Status
+          depends_on:
+            - task_key: EDW_ETL_Clms_DxPx
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/ValidationScripts/EDW_ETL_IssueStatus_DxPx
+            base_parameters:
+              catalog: oh_apm_stg
+              schema_name: vendor_extracts
+              schema_name_cmc: CMC
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: DxPx_Vldtn_MustRqrd_Fields
+          depends_on:
+            - task_key: EDW_ETL_Clms_DxPx
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/ValidationScripts/EDW_ETL_MustRqrdFlds_DxPx
+            base_parameters:
+              catalog: oh_apm_stg
+              schema_name: vendor_extracts
+              EDW_TblNm: EDW_temp_DiagSurgProcValCodes_Analytics
+              BIAR_TblNm: DiagSurgProcValCodes_Analytics_BIAR_EDW
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: DxPx_Vldtn_SmmryCnts
+          depends_on:
+            - task_key: EDW_ETL_Clms_DxPx
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/ValidationScripts/EDW_ETL_SumCnts_DxPx
+            base_parameters:
+              catalog: oh_apm_stg
+              VEN10001FA: EDW_VEN10001FA_Staging
+              schema_name: vendor_extracts
+              EDW_TblNm: EDW_temp_DiagSurgProcValCodes_Analytics
+              BIAR_TblNm: DiagSurgProcValCodes_Analytics_BIAR_EDW
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: EDW_ETL_Clms_Load_VE_Ctl
+          depends_on:
+            - task_key: EDW_ETL_Clms_Load_VE
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/ETL_Clms_Load_VE_Ctl
+            base_parameters:
+              catalog: oh_apm_stg
+              received_date: 2024-08-14
+              Clng_Month_Gap: "-120"
+              EDW_CtlLog: EDW_CtlLog_Clms_Staging
+              EDW_CtlLog_tmp: EDW_CtlLog_Clms_tmp
+              schema_name: vendor_extracts
+              EDW_CtlLog_hist: EDW_CtlLog_Historic
+              s3_location: s3://gia-stg-oh-ue1-data-raw/haven/inbound/VE_EDW/weekly/dt=
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: Clms_ETL_SmmryCnts_VE_Ctl
+          depends_on:
+            - task_key: EDW_ETL_Clms_Load_VE_Ctl
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/ValidationScripts/EDW_ETL_SumCnts_Clms_VE
+            base_parameters:
+              FileTyp_VEN12401: VEN12401FA
+              VEN12403FA: EDW_VEN12403FA_Staging
+              FileTyp_VEN10004: VEN10004FA
+              catalog: oh_apm_stg
+              FileTyp_VEN12501: VEN12501FA
+              FileTyp_VEN10009: VEN10009FA
+              FileTyp_VEN10005: VEN10005FA
+              VEN10003FA: EDW_VEN10003FA_Staging
+              VEN10008FA: EDW_VEN10008FA_Staging
+              VEN12401FA: EDW_VEN12401FA_Staging
+              VEN12404FA: EDW_VEN12404FA_Staging
+              FileTyp_VEN10008: VEN10008FA
+              EDW_CtlLog: EDW_CtlLog_Clms_Staging
+              VEN10005FA: EDW_VEN10005FA_Staging
+              VEN100FA: EDW_VEN100FA_Staging
+              schema_name: vendor_extracts
+              VEN12501FA: EDW_VEN12501FA_Staging
+              FileTyp_VEN100: VEN100FA
+              FileTyp_VEN10006: VEN10006FA
+              VEN10004FA: EDW_VEN10004FA_Staging
+              FileTyp_VEN12403: VEN12403FA
+              FileTyp_VEN10007: VEN10007FA
+              FileTyp_VEN10002: VEN10002FA
+              VEN10009FA: EDW_VEN10009FA_Staging
+              FileTyp_VEN10003: VEN10003FA
+              FileTyp_VEN12404: VEN12404FA
+              VEN10006FA: EDW_VEN10006FA_Staging
+              VEN10007FA: EDW_VEN10007FA_Staging
+              VEN10002FA: EDW_VEN10002FA_Staging
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: DxPx_ETL_SmmryCnts_VE_Ctl
+          depends_on:
+            - task_key: EDW_ETL_Clms_Load_VE_Ctl
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/ValidationScripts/EDW_ETL_SumCnts_DxPx_VE
+            base_parameters:
+              catalog: oh_apm_stg
+              FileTyp_VEN10001: VEN10001FA
+              VEN10001FA: EDW_VEN10001FA_Staging
+              EDW_CtlLog: EDW_CtlLog_Clms_Staging
+              schema_name: vendor_extracts
+              FileTyp_VEN12301: VEN12301FA
+              VEN12301FA: EDW_VEN12301FA_Staging
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: ETL_Clms_Inst_Analytics
+          depends_on:
+            - task_key: EDW_ETL_Clms_Load_VE
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/ETL_Clms_Inst_Analytics
+            base_parameters:
+              CleanDstntTblsFlag: F
+              VEN12501FA: EDW_VEN12501FA_Staging
+              catalog: oh_apm_stg
+              schema_name: vendor_extracts
+              schema_name_mc: managed_care
+              VEN100FA: EDW_VEN100FA_Staging
+              VEN10002FA: EDW_VEN10002FA_Staging
+              VEN10003FA: EDW_VEN10003FA_Staging
+              VEN10005FA: EDW_VEN10005FA_Staging
+              VEN10006FA: EDW_VEN10006FA_Staging
+              VEN10007FA: EDW_VEN10007FA_Staging
+              VEN12401FA: EDW_VEN12401FA_Staging
+              VEN12403FA: EDW_VEN12403FA_Staging
+              VEN12404FA: EDW_VEN12404FA_Staging
+              VEN117FA1: EDW_VEN117FA1_Staging
+              VEN117FA4: EDW_VEN117FA4_Staging
+              VEN117FA11: EDW_VEN117FA11_Staging
+              hipaa_820_raw: hipaa_820_raw
+              cl_inst_stg: EDW_temp_cl_inst_staging
+              cl_inst: EDW_temp_cl_inst
+              Inst_Analytics_stg: EDW_temp_Inst_Analytics_staging
+              Inst_Analytics: EDW_temp_Inst_Analytics
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: ETL_Clms_Med_Analytics
+          depends_on:
+            - task_key: EDW_ETL_Clms_Load_VE
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/ETL_Clms_Med_Analytics
+            base_parameters:
+              VEN12403FA: EDW_VEN12403FA_Staging
+              Med_Analytics_stg: EDW_temp_Med_Analytics_staging
+              cl_med: EDW_temp_cl_med
+              catalog: oh_apm_stg
+              cl_med_stg: EDW_temp_cl_med_staging
+              Med_Analytics: EDW_temp_Med_Analytics
+              VEN117FA1: EDW_VEN117FA1_Staging
+              VEN12401FA: EDW_VEN12401FA_Staging
+              VEN10001FA: EDW_VEN10001FA_Staging
+              VEN10005FA: EDW_VEN10005FA_Staging
+              hipaa_820_raw: hipaa_820_raw
+              VEN100FA: EDW_VEN100FA_Staging
+              schema_name: vendor_extracts
+              VEN12501FA: EDW_VEN12501FA_Staging
+              CleanDstntTblsFlag: F
+              VEN10004FA: EDW_VEN10004FA_Staging
+              VEN117FA4: EDW_VEN117FA4_Staging
+              VEN10007FA: EDW_VEN10007FA_Staging
+              VEN117FA11: EDW_VEN117FA11_Staging
+              schema_name_mc: managed_care
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: ETL_Clms_Phar_Analytics
+          depends_on:
+            - task_key: EDW_ETL_Clms_Load_VE
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/ETL_Clms_Phar_Analytics
+            base_parameters:
+              CleanDstntTblsFlag: F
+              VEN12501FA: EDW_VEN12501FA_Staging
+              catalog: oh_apm_stg
+              cl_phar: EDW_temp_cl_phar
+              cl_phar_stg: EDW_temp_cl_phar_staging
+              hipaa_820_raw: hipaa_820_raw
+              Phar_Analytics: EDW_temp_Phar_Analytics
+              Phar_Analytics_stg: EDW_temp_Phar_Analytics_staging
+              schema_name: vendor_extracts
+              schema_name_mc: managed_care
+              VEN100FA: EDW_VEN100FA_Staging
+              VEN117FA1: EDW_VEN117FA1_Staging
+              VEN117FA4: EDW_VEN117FA4_Staging
+              VEN117FA11: EDW_VEN117FA11_Staging
+              VEN12401FA: EDW_VEN12401FA_Staging
+              VEN12403FA: EDW_VEN12403FA_Staging
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: Inst_Vldtn_Issue_Status
+          depends_on:
+            - task_key: ETL_Clms_Inst_Analytics
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/ValidationScripts/EDW_ETL_IssueStatus_Inst
+            base_parameters:
+              VEN12403FA: EDW_VEN12403FA_Staging
+              catalog: oh_apm_stg
+              VEN100FA: EDW_VEN100FA_Staging
+              schema_name: vendor_extracts
+              EDW_TblNm: EDW_temp_cl_inst_staging
+              BIAR_TblNm: Inst_Analytics_BIAR_EDW
+              VEN10006FA: EDW_VEN10006FA_Staging
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: Inst_Vldtn_MustRqrd_Fields
+          depends_on:
+            - task_key: ETL_Clms_Inst_Analytics
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/ValidationScripts/EDW_ETL_MustRqrdFlds_Inst
+            base_parameters:
+              catalog: oh_apm_stg
+              Prov_TblNm: Provider_Analytics
+              schema_name: vendor_extracts
+              EDW_TblNm: EDW_temp_cl_inst_staging
+              BIAR_TblNm: Inst_Analytics_BIAR_EDW
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: Inst_Vldtn_SmmryCnts
+          depends_on:
+            - task_key: ETL_Clms_Inst_Analytics
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/ValidationScripts/EDW_ETL_SumCnts_Inst
+            base_parameters:
+              catalog: oh_apm_stg
+              VEN100FA: EDW_VEN100FA_Staging
+              schema_name: vendor_extracts
+              EDW_AnlytcsStgng_TblNm: EDW_temp_Inst_Analytics_staging
+              BIAR_TblNm: Inst_Analytics_BIAR_EDW
+              EDW_Anlytcs_TblNm: EDW_temp_Inst_Analytics
+              EDW_clStgng_TblNm: EDW_temp_cl_inst_staging
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: Med_Vldtn_Issue_Status
+          depends_on:
+            - task_key: ETL_Clms_Med_Analytics
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/ValidationScripts/EDW_ETL_IssueStatus_Med
+            base_parameters:
+              VEN12403FA: EDW_VEN12403FA_Staging
+              catalog: oh_apm_stg
+              VEN100FA: EDW_VEN100FA_Staging
+              schema_name: vendor_extracts
+              VEN10004FA: EDW_VEN10004FA_Staging
+              EDW_TblNm: EDW_temp_cl_Med_staging
+              BIAR_TblNm: Med_Analytics_BIAR_EDW
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: Med_Vldtn_MustRqrd_Fields
+          depends_on:
+            - task_key: ETL_Clms_Med_Analytics
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/ValidationScripts/EDW_ETL_MustRqrdFlds_Med
+            base_parameters:
+              catalog: oh_apm_stg
+              Prov_TblNm: Provider_Analytics
+              schema_name: vendor_extracts
+              EDW_TblNm: EDW_temp_cl_Med_staging
+              BIAR_TblNm: Med_Analytics_BIAR_EDW
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: Med_Vldtn_SmmryCnts
+          depends_on:
+            - task_key: ETL_Clms_Med_Analytics
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/ValidationScripts/EDW_ETL_SumCnts_Med
+            base_parameters:
+              catalog: oh_apm_stg
+              VEN100FA: EDW_VEN100FA_Staging
+              schema_name: vendor_extracts
+              EDW_AnlytcsStgng_TblNm: EDW_temp_Med_Analytics_staging
+              BIAR_TblNm: Med_Analytics_BIAR_EDW
+              EDW_Anlytcs_TblNm: EDW_temp_Med_Analytics
+              EDW_clStgng_TblNm: EDW_temp_cl_Med_staging
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: Phar_Vldtn_Issue_Status
+          depends_on:
+            - task_key: ETL_Clms_Phar_Analytics
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/ValidationScripts/EDW_ETL_IssueStatus_Phar
+            base_parameters:
+              VEN12403FA: EDW_VEN12403FA_Staging
+              catalog: oh_apm_stg
+              Prov_TblNm: Provider_Analytics
+              VEN100FA: EDW_VEN100FA_Staging
+              schema_name: vendor_extracts
+              EDW_TblNm: EDW_temp_cl_Phar_staging
+              BIAR_TblNm: Phar_Analytics_BIAR_EDW
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: Phar_Vldtn_MustRqrd_Fields
+          depends_on:
+            - task_key: ETL_Clms_Phar_Analytics
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/ValidationScripts/EDW_ETL_MustRqrdFlds_Phar
+            base_parameters:
+              catalog: oh_apm_stg
+              Prov_TblNm: Provider_Analytics
+              schema_name: vendor_extracts
+              EDW_TblNm: EDW_temp_cl_Phar_staging
+              BIAR_TblNm: Phar_Analytics_BIAR_EDW
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: Phar_Vldtn_SmmryCnts
+          depends_on:
+            - task_key: ETL_Clms_Phar_Analytics
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/ValidationScripts/EDW_ETL_SumCnts_Phar
+            base_parameters:
+              catalog: oh_apm_stg
+              VEN100FA: EDW_VEN100FA_Staging
+              schema_name: vendor_extracts
+              EDW_AnlytcsStgng_TblNm: EDW_temp_Phar_Analytics_staging
+              BIAR_TblNm: Phar_Analytics_BIAR_EDW
+              EDW_Anlytcs_TblNm: EDW_temp_Phar_Analytics
+              EDW_clStgng_TblNm: EDW_temp_cl_Phar_staging
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: UpdateFinalTables
+          depends_on:
+            - task_key: DxPx_Vldtn_Issue_Status
+            - task_key: Clms_ETL_SmmryCnts_VE_Ctl
+            - task_key: Inst_Vldtn_SmmryCnts
+            - task_key: Phar_Vldtn_MustRqrd_Fields
+            - task_key: DxPx_Vldtn_SmmryCnts
+            - task_key: Med_Vldtn_MustRqrd_Fields
+            - task_key: Phar_Vldtn_Issue_Status
+            - task_key: Med_Vldtn_SmmryCnts
+            - task_key: DxPx_Vldtn_MustRqrd_Fields
+            - task_key: Med_Vldtn_Issue_Status
+            - task_key: Phar_Vldtn_SmmryCnts
+            - task_key: Inst_Vldtn_Issue_Status
+            - task_key: Inst_Vldtn_MustRqrd_Fields
+            - task_key: DxPx_ETL_SmmryCnts_VE_Ctl
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/Update_APM_AnalyticsTbls
+            source: GIT
+          job_cluster_key: Job_cluster
+      job_clusters:
+        - job_cluster_key: Job_cluster
+          new_cluster:
+            cluster_name: ""
+            spark_version: 16.1.x-scala2.12
+            spark_conf:
+              spark.databricks.driver.ipykernel.commChannelEnabled: "False"
+            aws_attributes:
+              first_on_demand: 1
+              availability: SPOT_WITH_FALLBACK
+              zone_id: auto
+              instance_profile_arn: arn:aws:iam::721214004216:instance-profile/gia-stg-oh-ue1-data-ec2role
+              spot_bid_price_percent: 100
+              ebs_volume_count: 0
+            node_type_id: i4i.16xlarge
+            custom_tags:
+              Company: gainwell technologies
+              Env: stg
+              Aws_Account_Number: "721214004216"
+              Email: support-gia-de@mygainwell.onmicrosoft.com
+              Tenant: oh_haven
+              Team: gia-de
+              Project: gia
+              Infra_Service: fbae79be939839d0ca737f4badba10d8
+              Product: analytics
+              App_Service: 3401e33d9367e5508cf7324e1dba1059
+              Aws_Region: us-east-1
+            enable_elastic_disk: true
+            policy_id: 0019F7C702C5E025
+            data_security_mode: SINGLE_USER
+            runtime_engine: PHOTON
+            autoscale:
+              min_workers: 2
+              max_workers: 10
+      git_source:
+        git_url: https://github.com/mygainwell/act-oh-apm-databricks
+        git_provider: gitHub
+        git_branch: Feature_ETL_JZ
+      queue:
+        enabled: true

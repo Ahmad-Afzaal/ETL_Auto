@@ -1,0 +1,107 @@
+resources:
+  jobs:
+    EDW_ETL_Clms_Load_VE_Job:
+      name: EDW ETL Clms Load VE Job
+      email_notifications:
+        on_success:
+          - jaime.zavala@gainwelltechnologies.com
+          - calerajz@icloud.com
+        on_failure:
+          - jaime.zavala@gainwelltechnologies.com
+          - calerajz@icloud.com
+      tasks:
+        - task_key: EDW_ETL_Clms_Load_VE
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/ETL_Clms_Load_VE
+            base_parameters:
+              VEN12403FA: EDW_VEN12403FA_Staging
+              VEN12401FA_hist: EDW_VEN12401FA_Historic
+              VEN12403FA_hist: EDW_VEN12403FA_Historic
+              catalog: oh_apm_stg
+              received_date: 2024-08-14
+              VEN12404FA_hist: EDW_VEN12404FA_Historic
+              Clng_Month_Gap: "-120"
+              VEN10002FA_hist: EDW_VEN10002FA_Historic
+              VEN10009FA_hist: EDW_VEN10009FA_Historic
+              VEN10003FA: EDW_VEN10003FA_Staging
+              VEN10008FA: EDW_VEN10008FA_Staging
+              VEN10007FA_hist: EDW_VEN10007FA_Historic
+              VEN12401FA: EDW_VEN12401FA_Staging
+              VEN10001FA: EDW_VEN10001FA_Staging
+              VEN12404FA: EDW_VEN12404FA_Staging
+              VEN10005FA: EDW_VEN10005FA_Staging
+              VEN10003FA_hist: EDW_VEN10003FA_Historic
+              VEN12501FA_hist: EDW_VEN12501FA_Historic
+              VEN100FA: EDW_VEN100FA_Staging
+              schema_name: vendor_extracts
+              VEN10008FA_hist: EDW_VEN10008FA_Historic
+              VEN12501FA: EDW_VEN12501FA_Staging
+              VEN10004FA: EDW_VEN10004FA_Staging
+              VEN12301FA_hist: EDW_VEN12301FA_Historic
+              VEN10009FA: EDW_VEN10009FA_Staging
+              VEN10005FA_hist: EDW_VEN10005FA_Historic
+              VEN10006FA_hist: EDW_VEN10006FA_Historic
+              VEN10001FA_hist: EDW_VEN10001FA_Historic
+              s3_location: s3://gia-stg-oh-ue1-data-raw/haven/inbound/VE_EDW/weekly/dt=
+              VEN100FA_hist: EDW_VEN100FA_Historic
+              VEN10004FA_hist: EDW_VEN10004FA_Historic
+              VEN10006FA: EDW_VEN10006FA_Staging
+              VEN10007FA: EDW_VEN10007FA_Staging
+              VEN10002FA: EDW_VEN10002FA_Staging
+              VEN12301FA: EDW_VEN12301FA_Staging
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: EDW_ETL_Clms_Load_VE_Ctl
+          depends_on:
+            - task_key: EDW_ETL_Clms_Load_VE
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/ETL_Clms_Load_VE_Ctl
+            base_parameters:
+              catalog: oh_apm_stg
+              received_date: 2024-08-14
+              Clng_Month_Gap: "-120"
+              EDW_CtlLog: EDW_CtlLog_Clms_Staging
+              EDW_CtlLog_tmp: EDW_CtlLog_Clms_tmp
+              schema_name: vendor_extracts
+              EDW_CtlLog_hist: EDW_CtlLog_Historic
+              s3_location: s3://gia-stg-oh-ue1-data-raw/haven/inbound/VE_EDW/weekly/dt=
+            source: GIT
+          job_cluster_key: Job_cluster
+      job_clusters:
+        - job_cluster_key: Job_cluster
+          new_cluster:
+            cluster_name: ""
+            spark_version: 16.2.x-scala2.12
+            spark_conf:
+              spark.databricks.driver.ipykernel.commChannelEnabled: "False"
+            aws_attributes:
+              first_on_demand: 1
+              availability: SPOT_WITH_FALLBACK
+              zone_id: auto
+              instance_profile_arn: arn:aws:iam::721214004216:instance-profile/gia-stg-oh-ue1-data-ec2role
+              spot_bid_price_percent: 100
+              ebs_volume_count: 0
+            node_type_id: i4i.8xlarge
+            custom_tags:
+              Company: gainwell technologies
+              Env: stg
+              Aws_Account_Number: "721214004216"
+              Email: support-gia-de@mygainwell.onmicrosoft.com
+              Tenant: oh_haven
+              Team: gia-de
+              Project: gia
+              Infra_Service: fbae79be939839d0ca737f4badba10d8
+              Product: analytics
+              App_Service: 3401e33d9367e5508cf7324e1dba1059
+              Aws_Region: us-east-1
+            enable_elastic_disk: true
+            policy_id: 0019F7C702C5E025
+            data_security_mode: SINGLE_USER
+            runtime_engine: PHOTON
+            autoscale:
+              min_workers: 2
+              max_workers: 10
+      git_source:
+        git_url: https://github.com/mygainwell/act-oh-apm-databricks
+        git_provider: gitHub
+        git_branch: stage

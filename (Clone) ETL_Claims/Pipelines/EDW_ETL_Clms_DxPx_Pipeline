@@ -1,0 +1,71 @@
+resources:
+  jobs:
+    EDW_ETL_Clms_DxPx_Job:
+      name: EDW ETL Clms DxPx Job
+      tasks:
+        - task_key: EDW_ETL_Clms_DxPx
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Claims/ETL_Clms_DxPxCodes_Analytics
+            base_parameters:
+              catalog: oh_apm_stg
+              VEN10001FA: EDW_VEN10001FA_Staging
+              VEN100FA: EDW_VEN100FA_Staging
+              schema_name: archive_vendor_extracts
+              CleanDstntTblsFlag: F
+              DxPx_Analytics: EDW_temp_DiagSurgProcValCodes_Analytics
+              VEN12301FA: EDW_VEN12301FA_Staging
+            source: GIT
+          job_cluster_key: Job_cluster
+      job_clusters:
+        - job_cluster_key: Job_cluster
+          new_cluster:
+            cluster_name: ""
+            spark_version: 11.3.x-scala2.12
+            spark_conf:
+              spark.databricks.driver.ipykernel.commChannelEnabled: "False"
+            aws_attributes:
+              first_on_demand: 1
+              availability: SPOT_WITH_FALLBACK
+              zone_id: auto
+              instance_profile_arn: arn:aws:iam::721214004216:instance-profile/gia-stg-oh-ue1-data-ec2role
+              spot_bid_price_percent: 100
+              ebs_volume_count: 0
+            node_type_id: m5dn.4xlarge
+            custom_tags:
+              Company: gainwell technologies
+              Env: stage
+              Aws_Account_Number: "721214004216"
+              Email: support-gia-de@mygainwell.onmicrosoft.com
+              Tenant: oh_haven
+              Team: gia-de
+              Project: gia
+              Infra_Service: fbae79be939839d0ca737f4badba10d8
+              Product: analytics
+              App_Service: 3401e33d9367e5508cf7324e1dba1059
+              Aws_Region: us-east-1
+            enable_elastic_disk: true
+            policy_id: 0019F7C702C5E025
+            data_security_mode: SINGLE_USER
+            runtime_engine: STANDARD
+            autoscale:
+              min_workers: 2
+              max_workers: 20
+      git_source:
+        git_url: https://dev.azure.com/Haven-Analytics/SOH_Haven/_git/APM
+        git_provider: azureDevOpsServices
+        git_branch: stage
+      parameters:
+        - name: catalog
+          default: oh_apm_stg
+        - name: CleanDstntTblsFlag
+          default: T
+        - name: DxPx_Analytics
+          default: EDW_temp_DiagSurgProcValCodes_Analytics
+        - name: schema_name
+          default: vendor_extracts
+        - name: VEN100FA
+          default: EDW_VEN100FA_Staging
+        - name: VEN10001FA
+          default: EDW_VEN10001FA_Staging
+        - name: VEN12301FA
+          default: EDW_VEN12301FA_Staging
