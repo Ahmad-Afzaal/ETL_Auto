@@ -36,9 +36,9 @@
 #-----------
 dbutils.widgets.text('catalog', 'oh_apm_stg')
 dbutils.widgets.text('schema_name', 'vendor_extracts')
-dbutils.widgets.text('EDW_TblNm', 'EDW_temp_Provider_Analytics')
+dbutils.widgets.text('EDW_TblNm', 'Provider_Analytics')
 dbutils.widgets.text('BIAR_TblNm', 'BIAR_Provider_Analytics')
-dbutils.widgets.text('EDW_TblNm117', 'EDW_temp_ven117fa')
+dbutils.widgets.text('EDW_TblNm117', 'ven117fa')
 dbutils.widgets.text('BIAR_TblNm117', 'BIAR_ven117fa')
 
 catalog = dbutils.widgets.get('catalog')
