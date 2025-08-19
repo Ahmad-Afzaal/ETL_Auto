@@ -26,6 +26,10 @@
 #* 06/13/2024 CCRB70930/CO#43342  Jaime Zavala        Added Counts for Track_Missing_ICNs_EDWVsBIAR.                                *
 #* 08/01/2024 CCRB70930/CO#43342  Jaime Zavala        Added Variables to Table names.                                               *
 #* 10/08/2024 CCRB70930/CO#43342  Jaime Zavala        Added Logic to track Records w/Claim Type Code=NULL.                          *
+#* 08/19/2025 CCRB70930/CO#43342  Jaime Zavala        CLM_TYP_CD applied the following Mapping:                                     *
+#*                                                    'PART A INSTITUTIONAL' THEN 'A'                                               *
+#*                                                    'PART B INSTITUTIONAL' THEN 'B'                                               *
+#*                                                    'PART C INSTITUTIONAL' THEN 'C'                                               *
 #************************************************************************************************************************************
 
 
@@ -69,6 +73,7 @@ where UPPER(TRIM(CLM_TYP_CD)) in (
 'LTC','INPATIENT','PART B INPATIENT','PART C LTC','PART A OUTPATIENT'
 ,'INSTITUTIONAL','PART C OUTPATIENT','PART A LTC','PART B OUTPATIENT'
 ,'PART B LTC','PART A INPATIENT','PART C INPATIENT','OUTPATIENT'
+,'PART A INSTITUTIONAL','PART B INSTITUTIONAL','PART C INSTITUTIONAL'
 )
 ;
                """)
@@ -80,6 +85,7 @@ where UPPER(TRIM(CLM_TYP_CD)) in (
 'LTC','INPATIENT','PART B INPATIENT','PART C LTC','PART A OUTPATIENT'
 ,'INSTITUTIONAL','PART C OUTPATIENT','PART A LTC','PART B OUTPATIENT'
 ,'PART B LTC','PART A INPATIENT','PART C INPATIENT','OUTPATIENT'
+,'PART A INSTITUTIONAL','PART B INSTITUTIONAL','PART C INSTITUTIONAL'
 )
 ;
                """)
@@ -91,6 +97,7 @@ where UPPER(TRIM(CLM_TYP_CD)) in (
 'LTC','INPATIENT','PART B INPATIENT','PART C LTC','PART A OUTPATIENT'
 ,'INSTITUTIONAL','PART C OUTPATIENT','PART A LTC','PART B OUTPATIENT'
 ,'PART B LTC','PART A INPATIENT','PART C INPATIENT','OUTPATIENT'
+,'PART A INSTITUTIONAL','PART B INSTITUTIONAL','PART C INSTITUTIONAL'
 )
 ;
                """)
@@ -102,6 +109,7 @@ where UPPER(TRIM(CLM_TYP_CD)) in (
 'LTC','INPATIENT','PART B INPATIENT','PART C LTC','PART A OUTPATIENT'
 ,'INSTITUTIONAL','PART C OUTPATIENT','PART A LTC','PART B OUTPATIENT'
 ,'PART B LTC','PART A INPATIENT','PART C INPATIENT','OUTPATIENT'
+,'PART A INSTITUTIONAL','PART B INSTITUTIONAL','PART C INSTITUTIONAL'
 )
 ;
                """)
@@ -113,6 +121,7 @@ where UPPER(TRIM(CLM_TYP_CD)) in (
 'LTC','INPATIENT','PART B INPATIENT','PART C LTC','PART A OUTPATIENT'
 ,'INSTITUTIONAL','PART C OUTPATIENT','PART A LTC','PART B OUTPATIENT'
 ,'PART B LTC','PART A INPATIENT','PART C INPATIENT','OUTPATIENT'
+,'PART A INSTITUTIONAL','PART B INSTITUTIONAL','PART C INSTITUTIONAL'
 )
 ;
                """)
@@ -128,6 +137,7 @@ display(sql_out)
 #                                'LTC','INPATIENT','PART B INPATIENT','PART C LTC','PART A OUTPATIENT'
 #                               ,'INSTITUTIONAL','PART C OUTPATIENT','PART A LTC','PART B OUTPATIENT'
 #                               ,'PART B LTC','PART A INPATIENT','PART C INPATIENT','OUTPATIENT'
+#                               ,'PART A INSTITUTIONAL','PART B INSTITUTIONAL','PART C INSTITUTIONAL'
 #                              )
 #                       )
 #;
