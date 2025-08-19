@@ -26,7 +26,7 @@
 #* 06/20/2024 CCRB70930/CO#43342  Jaime Zavala        Added CleanDstntTblsFlag Defaul-F, T when using EDW_temp_ in table's names    *
 #*                                                    and VE are Full Refresh.                                                      *
 #* 07/24/2024 CCRB70930/CO#43342  Jaime Zavala        Added logic to use CleanDstntTblsFlag for Delta VE source type.               *
-#* 08/01/2024 TEST                Jaime Zavala        CODE_CLM_TYPE applied the following Mapping:                                  *
+#* 08/01/2024 CCRB70930/CO#43342  Jaime Zavala        CDE_CLM_TYPE applied the following Mapping:                                   *
 #*                                                    'PART B INPATIENT'  THEN 'B'                                                  *
 #*                                                    'PART C LTC'        THEN 'C'                                                  *
 #*                                                    'PART A OUTPATIENT' THEN 'A'                                                  *
@@ -35,6 +35,10 @@
 #*                                                    'PART C INPATIENT'  THEN 'C'                                                  *
 #*                                                    'PART C PROFESSIONAL' THEN 'C'                                                *
 #*                                                    'PART A PROFESSIONAL' THEN 'A'                                                *
+#* 08/19/2025 CCRB70930/CO#43342  Jaime Zavala        CDE_CLM_TYPE applied the following Mapping:                                   *
+#*                                                    'PART A INSTITUTIONAL' THEN 'A'                                               *
+#*                                                    'PART B INSTITUTIONAL' THEN 'B'                                               *
+#*                                                    'PART C INSTITUTIONAL' THEN 'C'                                               *
 #************************************************************************************************************************************
 
 
@@ -209,6 +213,9 @@ else:
 # MAGIC                                   WHEN 'PART A PROFESSIONAL' THEN 'A'
 # MAGIC                                   WHEN 'P'                   THEN 'P'
 # MAGIC                                   WHEN 'Q'                   THEN 'Q'
+# MAGIC                                   WHEN 'PART A INSTITUTIONAL' THEN 'A'
+# MAGIC                                   WHEN 'PART B INSTITUTIONAL' THEN 'B'
+# MAGIC                                   WHEN 'PART C INSTITUTIONAL' THEN 'C'
 # MAGIC                                   ELSE ''
 # MAGIC                                   END AS CDE_CLM_TYPE                           -- Meet v0.3 code changes
 # MAGIC     ,CAST(DATE_FORMAT(CAST(REPORT_DTE AS DATE),'yMM') AS INT)    AS PARTITION_COL  -- Meet v0.3 code changes
@@ -334,6 +341,9 @@ else:
 # MAGIC                                   WHEN 'PART A PROFESSIONAL' THEN 'A'
 # MAGIC                                   WHEN 'P'                   THEN 'P'
 # MAGIC                                   WHEN 'Q'                   THEN 'Q'
+# MAGIC                                   WHEN 'PART A INSTITUTIONAL' THEN 'A'
+# MAGIC                                   WHEN 'PART B INSTITUTIONAL' THEN 'B'
+# MAGIC                                   WHEN 'PART C INSTITUTIONAL' THEN 'C'
 # MAGIC                                   ELSE ''
 # MAGIC                                   END AS CDE_CLM_TYPE                            -- Meet v0.3 code changes
 # MAGIC     ,CAST(DATE_FORMAT(CAST(REPORT_DTE AS DATE),'yMM') AS INT) AS PARTITION_COL   -- Meet v0.2 & v0.3 code changes

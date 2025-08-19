@@ -109,6 +109,10 @@
 #*                                                    FldChng NA79 TO CLAIM_ACTIVE_IND. Mapped to VEN100FA.                         *
 #*                                                    FldChng NA80 TO LAST_CLAIM_IND. Mapped to VEN100FA.                           *
 #*                                                    FldChng NA81 TO IS_DKP_IND. Mapped to VEN100FA.                               *
+#* 08/19/2025 CCRB70930/CO#43342  Jaime Zavala        CODE_CLM_TYPE applied the following Mapping:                                  *
+#*                                                    'PART A INSTITUTIONAL' THEN 'A'                                               *
+#*                                                    'PART B INSTITUTIONAL' THEN 'B'                                               *
+#*                                                    'PART C INSTITUTIONAL' THEN 'C'                                               *
 #************************************************************************************************************************************
 #
 
@@ -676,6 +680,9 @@ print(Inst_Analytics)
 # MAGIC                                               WHEN 'PART A INPATIENT'  THEN 'A'
 # MAGIC                                               WHEN 'PART C INPATIENT'  THEN 'C'
 # MAGIC                                               WHEN 'OUTPATIENT'        THEN 'O'
+# MAGIC                                               WHEN 'PART A INSTITUTIONAL' THEN 'A'
+# MAGIC                                               WHEN 'PART B INSTITUTIONAL' THEN 'B'
+# MAGIC                                               WHEN 'PART C INSTITUTIONAL' THEN 'C'
 # MAGIC                                               ELSE ''
 # MAGIC                                               END  AS CODE_CLM_TYPE
 # MAGIC         ,CASE UPPER(TRIM(ClmMain.CLAIM_IND)) WHEN 'N' THEN 'F'
@@ -1047,7 +1054,8 @@ print(Inst_Analytics)
 # MAGIC         --where ClmMain.CLM_TYP_CD in('A','C','I','L','O')
 # MAGIC         where UPPER(TRIM(ClmMain.CLM_TYP_CD)) in ('LTC','INPATIENT','PART B INPATIENT','PART C LTC','PART A OUTPATIENT'
 # MAGIC                                                  ,'INSTITUTIONAL','PART C OUTPATIENT','PART A LTC','PART B OUTPATIENT'
-# MAGIC                                                  ,'PART B LTC','PART A INPATIENT','PART C INPATIENT','OUTPATIENT')
+# MAGIC                                                  ,'PART B LTC','PART A INPATIENT','PART C INPATIENT','OUTPATIENT'
+# MAGIC                                                  ,'PART A INSTITUTIONAL','PART B INSTITUTIONAL','PART C INSTITUTIONAL')
 # MAGIC )clm
 # MAGIC ;
 # MAGIC
