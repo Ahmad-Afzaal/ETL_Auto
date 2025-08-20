@@ -24,6 +24,8 @@
 #*    Date     CO                 Author              Description                                                                   *
 #* ---------- ------------------  -----------------   ------------------------------------------------------------------------------*
 #* 06/06/2024 CCRB70930/CO#43342  Jaime Zavala        Added "MONTHLY" to VEN101FA's file mask.                                      *
+#* 08/19/2025 CCRB70930/CO#43342  Jaime Zavala        Modified to met new Layout under RECIPIENT_ELIG_FULL_EXTRACT/VEN101FA.        *
+#*                                                    Add 28 new data elements.                                                     *
 #************************************************************************************************************************************
 
 
@@ -36,7 +38,7 @@
 dbutils.widgets.text('s3_location', 's3://gia-stg-oh-ue1-data-raw/haven/inbound/VE_EDW/weekly/dt=')  
 dbutils.widgets.text('received_date', '2024-03-14')  
 dbutils.widgets.text('catalog', 'oh_apm_stg')  
-dbutils.widgets.text('schema_name', 'archive_vendor_extracts')  
+dbutils.widgets.text('schema_name', 'vendor_extracts')  
 dbutils.widgets.text('Clng_Month_Gap', '-120')
 
 
@@ -1367,6 +1369,34 @@ df.write.mode("overwrite").saveAsTable(table_name)
 # MAGIC ,OHRISE_IND_MCP                         DECIMAL(1,0)
 # MAGIC ,OHRISE_IND_FFS                         DECIMAL(1,0)
 # MAGIC ,BP_OHRISE_WVR                          DECIMAL(1,0)
+# MAGIC ,MEMID                                  STRING
+# MAGIC ,ENROLL_ID                              STRING
+# MAGIC ,PLAN_ID                                STRING
+# MAGIC ,RATE_ID                                STRING
+# MAGIC ,BP_FMPLN                               DECIMAL(1,0)
+# MAGIC ,BP_MCABD                               DECIMAL(1,0)
+# MAGIC ,BP_MCCFC                               DECIMAL(1,0)
+# MAGIC ,BP_MCICD                               DECIMAL(1,0)
+# MAGIC ,BP_MCLTC                               DECIMAL(1,0)
+# MAGIC ,BP_MCOHR                               DECIMAL(1,0)
+# MAGIC ,BP_MFP                                 DECIMAL(1,0)
+# MAGIC ,BP_PEPW                                DECIMAL(1,0)
+# MAGIC ,PROGRAMID                              STRING
+# MAGIC ,PROGRAM_DESC                           STRING
+# MAGIC ,PLAN_ID_DESC                           STRING
+# MAGIC ,OHRISE_ENROLL_ID                       STRING
+# MAGIC ,OHRISE_PLAN_ID                         STRING
+# MAGIC ,OHRISE_PLAN_ID_DESC                    STRING
+# MAGIC ,MED_A_HOSPITALONLY                     DECIMAL(1,0)
+# MAGIC ,MED_B_PROFONLY                         DECIMAL(1,0)
+# MAGIC ,MED_C_MEDICAL                          DECIMAL(1,0)
+# MAGIC ,MED_D_PHARMACY                         DECIMAL(1,0)
+# MAGIC ,COB01_COMPREHENSIVE                    DECIMAL(1,0)
+# MAGIC ,COB02_HOSPITALONLY                     DECIMAL(1,0)
+# MAGIC ,COB05_PHARMACY                         DECIMAL(1,0)
+# MAGIC ,COB04_COMPDENTAL                       DECIMAL(1,0)
+# MAGIC ,COB06_VISION                           DECIMAL(1,0)
+# MAGIC ,COB07_LONGTERMCARE                     DECIMAL(1,0)
 # MAGIC )
 # MAGIC
 
@@ -1516,6 +1546,34 @@ schema = StructType([
 ,StructField("OHRISE_IND_MCP"               ,DecimalType(1,0), True)
 ,StructField("OHRISE_IND_FFS"               ,DecimalType(1,0), True)
 ,StructField("BP_OHRISE_WVR"                ,DecimalType(1,0), True)
+,StructField("MEMID"                        ,StringType(), True)
+,StructField("ENROLL_ID"                    ,StringType(), True)
+,StructField("PLAN_ID"                      ,StringType(), True)
+,StructField("RATE_ID"                      ,StringType(), True)
+,StructField("BP_FMPLN"                     ,DecimalType(1,0), True)
+,StructField("BP_MCABD"                     ,DecimalType(1,0), True)
+,StructField("BP_MCCFC"                     ,DecimalType(1,0), True)
+,StructField("BP_MCICD"                     ,DecimalType(1,0), True)
+,StructField("BP_MCLTC"                     ,DecimalType(1,0), True)
+,StructField("BP_MCOHR"                     ,DecimalType(1,0), True)
+,StructField("BP_MFP"                       ,DecimalType(1,0), True)
+,StructField("BP_PEPW"                      ,DecimalType(1,0), True)
+,StructField("PROGRAMID"                    ,StringType(), True)
+,StructField("PROGRAM_DESC"                 ,StringType(), True)
+,StructField("PLAN_ID_DESC"                 ,StringType(), True)
+,StructField("OHRISE_ENROLL_ID"             ,StringType(), True)
+,StructField("OHRISE_PLAN_ID"               ,StringType(), True)
+,StructField("OHRISE_PLAN_ID_DESC"          ,StringType(), True)
+,StructField("MED_A_HOSPITALONLY"           ,DecimalType(1,0), True)
+,StructField("MED_B_PROFONLY"               ,DecimalType(1,0), True)
+,StructField("MED_C_MEDICAL"                ,DecimalType(1,0), True)
+,StructField("MED_D_PHARMACY"               ,DecimalType(1,0), True)
+,StructField("COB01_COMPREHENSIVE"          ,DecimalType(1,0), True)
+,StructField("COB02_HOSPITALONLY"           ,DecimalType(1,0), True)
+,StructField("COB05_PHARMACY"               ,DecimalType(1,0), True)
+,StructField("COB04_COMPDENTAL"             ,DecimalType(1,0), True)
+,StructField("COB06_VISION"                 ,DecimalType(1,0), True)
+,StructField("COB07_LONGTERMCARE"           ,DecimalType(1,0), True)
 ])
 
 table_name = f"{catalog}.{schema_name}.{VEN101FA}"
