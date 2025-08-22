@@ -29,14 +29,18 @@
 
 # COMMAND ----------
 
+dbutils.widgets.removeAll()
+
+# COMMAND ----------
+
 # DBTITLE 1,Parameters
 #-----------
 # DBX Parms
 #-----------
-dbutils.widgets.text('s3_location', 's3://gia-stg-oh-ue1-data-raw/haven/haven/inbound/VE_EDW/dt=')  
-dbutils.widgets.text('received_date', '2024-02-14')
+dbutils.widgets.text('s3_location', 's3://gia-stg-oh-ue1-data-raw/haven/inbound/VE_EDW')  
+dbutils.widgets.text('received_date', '/process/ETL_Elig')
 dbutils.widgets.text('catalog', 'oh_apm_stg')  
-dbutils.widgets.text('schema_name', 'archive_vendor_extracts')  
+dbutils.widgets.text('schema_name', 'vendor_extracts')  
 dbutils.widgets.text('Clng_Month_Gap', '-120')
 dbutils.widgets.text('FileMask', '*.RECIPIENT.MONTHLY.*.ctl')
 dbutils.widgets.text('VEN116', 'VEN116FA')
@@ -45,7 +49,7 @@ dbutils.widgets.text('VEN101', 'VEN101FA')
 #-------------------
 # EDW Staging Tables
 #-------------------
-dbutils.widgets.text('EDW_CtlLog_tmp', 'EDW_CtlLog_Elig_tmp')
+dbutils.widgets.text('EDW_CtlLog', 'EDW_CtlLog_Elig')
 dbutils.widgets.text('EDW_CtlLog', 'EDW_CtlLog_Elig_Staging')
 
 #--------------------

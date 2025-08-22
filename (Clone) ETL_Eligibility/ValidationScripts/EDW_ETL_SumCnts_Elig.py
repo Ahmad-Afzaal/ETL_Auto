@@ -34,8 +34,8 @@
 # DBX Parms
 #-----------
 dbutils.widgets.text('catalog', 'oh_apm_stg')
-dbutils.widgets.text('schema_name', 'archive_vendor_extracts')
-dbutils.widgets.text('EDW_TblNm', 'EDW_temp_Eligibility_Analytics')
+dbutils.widgets.text('schema_name', 'vendor_extracts')
+dbutils.widgets.text('EDW_TblNm', 'Eligibility_Analytics')
 
 catalog = dbutils.widgets.get('catalog')
 schema_name = dbutils.widgets.get('schema_name')
