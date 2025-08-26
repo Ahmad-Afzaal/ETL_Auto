@@ -92,6 +92,7 @@
 #*                                                    FldChng NA79 TO CLAIM_ACTIVE_IND. Mapped to VEN100FA.                         *
 #*                                                    FldChng NA80 TO LAST_CLAIM_IND. Mapped to VEN100FA.                           *
 #*                                                    FldChng NA81 TO IS_DKP_IND. Mapped to VEN100FA.                               *
+#* 08/25/2025 CCRB70930/CO#43342  Jaime Zavala        Include Deny Claims in the cl_phar table.                                     *
 #************************************************************************************************************************************
 
 
@@ -909,7 +910,7 @@ else:
 # MAGIC AND a.NUM_ICN1 is not null
 # MAGIC AND a.ID_MEDICAID1 is not null
 # MAGIC AND a.DERIVED1 NOT IN ('T')
-# MAGIC AND a.CDE_HDR_STATUS = 'P'
+# MAGIC -- AND a.CDE_HDR_STATUS = 'P' -- 8/25/2025 Include Deny Claims
 # MAGIC AND NOT EXISTS
 # MAGIC (
 # MAGIC     SELECT 1 

@@ -190,6 +190,7 @@ resources:
               BIAR_TblNm: Phar_Analytics_BIAR_EDW
               EDW_Anlytcs_TblNm: EDW_temp_Phar_Analytics
               EDW_clStgng_TblNm: EDW_temp_cl_Phar_staging
+              EDW_cl_TblNm: EDW_temp_cl_Phar
             source: GIT
           job_cluster_key: Job_cluster
       job_clusters:

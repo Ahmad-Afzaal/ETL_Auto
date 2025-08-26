@@ -25,6 +25,7 @@
 #* ---------- ------------------  -----------------   ------------------------------------------------------------------------------*
 #* 06/13/2024 CCRB70930/CO#43342  Jaime Zavala        Added Counts for Track_Missing_ICNs_EDWVsBIAR.                                *
 #* 08/01/2024 CCRB70930/CO#43342  Jaime Zavala        Added Variables to Table names.                                               *
+#* 08/25/2025 CCRB70930/CO#43342  Jaime Zavala        Added count logics for EDW_cl_TblNm.                                          *
 #************************************************************************************************************************************
 
 
@@ -38,6 +39,7 @@ dbutils.widgets.text('catalog', 'oh_apm_stg')
 dbutils.widgets.text('schema_name', 'vendor_extracts')
 dbutils.widgets.text('VEN100FA', 'EDW_VEN100FA_Staging')
 dbutils.widgets.text('EDW_clStgng_TblNm', 'EDW_temp_cl_Phar_staging')
+dbutils.widgets.text('EDW_cl_TblNm', 'EDW_temp_cl_Phar')
 dbutils.widgets.text('EDW_Anlytcs_TblNm', 'EDW_temp_Phar_Analytics')
 dbutils.widgets.text('EDW_AnlytcsStgng_TblNm', 'EDW_temp_Phar_Analytics_staging')
 dbutils.widgets.text('BIAR_TblNm', 'Phar_Analytics')
@@ -46,6 +48,7 @@ catalog = dbutils.widgets.get('catalog')
 schema_name = dbutils.widgets.get('schema_name')
 VEN100FA = dbutils.widgets.get('VEN100FA')
 EDW_clStgng_TblNm = dbutils.widgets.get('EDW_clStgng_TblNm')
+EDW_cl_TblNm = dbutils.widgets.get('EDW_cl_TblNm')
 EDW_Anlytcs_TblNm = dbutils.widgets.get('EDW_Anlytcs_TblNm')
 EDW_AnlytcsStgng_TblNm = dbutils.widgets.get('EDW_AnlytcsStgng_TblNm')
 BIAR_TblNm = dbutils.widgets.get('BIAR_TblNm')
@@ -54,6 +57,7 @@ print("catalog:", catalog)
 print("schema:", schema_name)
 print("VEN100FA:", VEN100FA)
 print("EDW_clStgng_TblNm:", EDW_clStgng_TblNm)
+print("EDW_cl_TblNm:", EDW_cl_TblNm)
 print("EDW_Anlytcs_TblNm:", EDW_Anlytcs_TblNm)
 print("EDW_AnlytcsStgng_TblNm:", EDW_AnlytcsStgng_TblNm)
 print("BIAR_TblNm:", BIAR_TblNm)
@@ -245,6 +249,34 @@ select count(distinct NUM_ICN1) AS Pharmacy_EDW_temp_Phar_Analytics_Missing_EDW_
                          select distinct NUM_ICN1
                            from {catalog}.{schema_name}.{EDW_Anlytcs_TblNm}
                        )
+;
+		""")
+display(sql_out)
+
+
+# COMMAND ----------
+
+sql_out = spark.sql(f"""
+select count(distinct NUM_ICN1) AS Pharmacy_EDW_temp_cl_Phar_NUM_ICN1
+ from {catalog}.{schema_name}.{EDW_cl_TblNm}
+;
+		""")
+display(sql_out)
+sql_out = spark.sql(f"""
+select count(distinct NUM_ICN1||NUM_DTL) AS Pharmacy_EDW_temp_cl_Phar_NUM_ICN1_NUM_DTL
+ from {catalog}.{schema_name}.{EDW_cl_TblNm}
+;
+		""")
+display(sql_out)
+sql_out = spark.sql(f"""
+select count(distinct ID_MEDICAID1) AS Pharmacy_EDW_temp_cl_Phar_ID_MEDICAID1
+from {catalog}.{schema_name}.{EDW_cl_TblNm}
+;
+		""")
+display(sql_out)
+sql_out = spark.sql(f"""
+select count(*) AS Pharmacy_EDW_temp_cl_Phar_count
+ from {catalog}.{schema_name}.{EDW_cl_TblNm}
 ;
 		""")
 display(sql_out)
