@@ -24,6 +24,7 @@
 #*    Date     CO                 Author              Description                                                                   *
 #* ---------- ------------------  -----------------   ------------------------------------------------------------------------------*
 #* 11/04/2025 CCRB70930/CO#43342  Jaime Zavala        Initial Release.                                                              *
+#* 11/17/2025 CCRB70930/CO#43342  Jaime Zavala        Modified to met QA's Spreadsheet.                                             *
 #************************************************************************************************************************************
 
 
@@ -65,7 +66,7 @@ print("Previous Table Name:", PrevTblNm)
 
 # COMMAND ----------
 
-# DBTITLE 1,Plant Specs
+# DBTITLE 1,Part Specs
 # MAGIC
 # MAGIC %sql
 # MAGIC create or replace table ${catalog}.${schema_name}.${DiffAnlysTblNm} AS 
@@ -74,15 +75,15 @@ print("Previous Table Name:", PrevTblNm)
 # MAGIC      COALESCE(PrevTbl.ID_MEDICAID1, CurntTbl.ID_MEDICAID1) AS ID_MEDICAID1          -- This is the common identifier
 # MAGIC     ,COALESCE(PrevTbl.N_DTE_TPL_EFFECTIVE, CurntTbl.N_DTE_TPL_EFFECTIVE) AS N_DTE_TPL_EFFECTIVE -- This is the common identifier
 # MAGIC 	-- None Compare Fileds
-# MAGIC     ,CASE WHEN PrevTbl.Derived1                  != CurntTbl.Derived1                  THEN PrevTbl.Derived1                  ELSE NULL END AS CurntTbl_Derived1    -- REPORT_DTE
-# MAGIC     ,CASE WHEN PrevTbl.Derived1                  != CurntTbl.Derived1                  THEN CurntTbl.Derived1                 ELSE NULL END AS PrevTbl_Derived1    
+# MAGIC     ,CASE WHEN PrevTbl.Derived1                  != CurntTbl.Derived1                  THEN PrevTbl.Derived1                  ELSE NULL END AS PrevTbl_Derived1     -- REPORT_DTE
+# MAGIC     ,CASE WHEN PrevTbl.Derived1                  != CurntTbl.Derived1                  THEN CurntTbl.Derived1                 ELSE NULL END AS CurntTbl_Derived1
 # MAGIC     -- Compare Fields
-# MAGIC     ,CASE WHEN PrevTbl.Derived2                  != CurntTbl.Derived2                  THEN PrevTbl.Derived2                  ELSE NULL END AS CurntTbl_Derived2    -- ENRL_SPAN_TYP
-# MAGIC     ,CASE WHEN PrevTbl.Derived2                  != CurntTbl.Derived2                  THEN CurntTbl.Derived2                 ELSE NULL END AS PrevTbl_Derived2    
-# MAGIC     ,CASE WHEN PrevTbl.NUM_CASE                  != CurntTbl.NUM_CASE                  THEN PrevTbl.NUM_CASE                  ELSE NULL END AS CurntTbl_NUM_CASE                               
-# MAGIC     ,CASE WHEN PrevTbl.NUM_CASE                  != CurntTbl.NUM_CASE                  THEN CurntTbl.NUM_CASE                 ELSE NULL END AS PrevTbl_NUM_CASE                               
-# MAGIC     ,CASE WHEN PrevTbl.N_DTE_TPL_END             != CurntTbl.N_DTE_TPL_END             THEN PrevTbl.N_DTE_TPL_END             ELSE NULL END AS CurntTbl_N_DTE_TPL_END                               
-# MAGIC     ,CASE WHEN PrevTbl.N_DTE_TPL_END             != CurntTbl.N_DTE_TPL_END             THEN CurntTbl.N_DTE_TPL_END            ELSE NULL END AS PrevTbl_N_DTE_TPL_END                               
+# MAGIC     ,CASE WHEN PrevTbl.Derived2                  != CurntTbl.Derived2                  THEN PrevTbl.Derived2                  ELSE NULL END AS PrevTbl_Derived2     -- ENRL_SPAN_TYP
+# MAGIC     ,CASE WHEN PrevTbl.Derived2                  != CurntTbl.Derived2                  THEN CurntTbl.Derived2                 ELSE NULL END AS CurntTbl_Derived2
+# MAGIC     ,CASE WHEN PrevTbl.NUM_CASE                  != CurntTbl.NUM_CASE                  THEN PrevTbl.NUM_CASE                  ELSE NULL END AS PrevTbl_NUM_CASE
+# MAGIC     ,CASE WHEN PrevTbl.NUM_CASE                  != CurntTbl.NUM_CASE                  THEN CurntTbl.NUM_CASE                 ELSE NULL END AS CurntTbl_NUM_CASE
+# MAGIC     ,CASE WHEN PrevTbl.N_DTE_TPL_END             != CurntTbl.N_DTE_TPL_END             THEN PrevTbl.N_DTE_TPL_END             ELSE NULL END AS PrevTbl_N_DTE_TPL_END
+# MAGIC     ,CASE WHEN PrevTbl.N_DTE_TPL_END             != CurntTbl.N_DTE_TPL_END             THEN CurntTbl.N_DTE_TPL_END            ELSE NULL END AS CurntTbl_N_DTE_TPL_END
 # MAGIC            FROM ${catalog}.${schema_name}.${CurntTblNm} CurntTbl
 # MAGIC FULL OUTER JOIN ${catalog}.${schema_name}.${PrevTblNm} PrevTbl ON PrevTbl.ID_MEDICAID1    = CurntTbl.ID_MEDICAID1 
 # MAGIC                                                               AND PrevTbl.N_DTE_TPL_EFFECTIVE = CurntTbl.N_DTE_TPL_EFFECTIVE
@@ -95,19 +96,19 @@ print("Previous Table Name:", PrevTblNm)
 
 # COMMAND ----------
 
-# DBTITLE 1,Plan Count
+# DBTITLE 1,Part Count
 # MAGIC %sql
 # MAGIC  select count(*) from ${catalog}.${schema_name}.${DiffAnlysTblNm};
 
 # COMMAND ----------
 
-# DBTITLE 1,Plan Data Profile
+# DBTITLE 1,Part Data Profile
 # MAGIC %sql
 # MAGIC  select * from ${catalog}.${schema_name}.${DiffAnlysTblNm};
 
 # COMMAND ----------
 
-# DBTITLE 1,Summary Plan
+# DBTITLE 1,Summary Part
 # MAGIC %sql
 # MAGIC WITH
 # MAGIC   Sum_Total AS (
@@ -135,7 +136,6 @@ print("Previous Table Name:", PrevTblNm)
 # MAGIC   )
 # MAGIC
 # MAGIC SELECT
-# MAGIC   format_number(t4.cntTotal, 0)                             AS cntTotal,
 # MAGIC   format_number(t1.Diff_Derived2, 0)                        AS Diff_Derived2,
 # MAGIC   format_number(CASE WHEN t4.cntTotal = 0 THEN 0
 # MAGIC                   ELSE t1.Diff_Derived2 * 100 / t4.cntTotal
@@ -147,7 +147,8 @@ print("Previous Table Name:", PrevTblNm)
 # MAGIC   format_number(t3.Diff_N_DTE_TPL_END, 0)                       AS Diff_N_DTE_TPL_END,
 # MAGIC   format_number(CASE WHEN t4.cntTotal = 0 THEN 0
 # MAGIC                   ELSE t3.Diff_N_DTE_TPL_END * 100 / t4.cntTotal
-# MAGIC              END, '###.#')                                  AS Pcntg_N_DTE_TPL_END
+# MAGIC              END, '###.#')                                  AS Pcntg_N_DTE_TPL_END,
+# MAGIC   format_number(t4.cntTotal, 0)                             AS cntTotal
 # MAGIC FROM
 # MAGIC   Cnt_Derived2 t1,
 # MAGIC   Cnt_NUM_CASE t2,
