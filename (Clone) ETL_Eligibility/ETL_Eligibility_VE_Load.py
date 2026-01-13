@@ -26,12 +26,17 @@
 #* 06/06/2024 CCRB70930/CO#43342  Jaime Zavala        Added "MONTHLY" to VEN101FA's file mask.                                      *
 #* 08/19/2025 CCRB70930/CO#43342  Jaime Zavala        Modified to met new Layout under RECIPIENT_ELIG_FULL_EXTRACT/VEN101FA.        *
 #*                                                    Add 28 new data elements.                                                     *
+#* 01/12/2026 CCRB70930/CO#43342  Jaime Zavala        Modified to met new Layout ODM.EDW.VEN.Vendor_Recipient_Extracts_20251211.    *
+#*                                                    File Extract: VEN116FA.PART.D01                                               *
+#*                                                      SAK_AID_ELIG DECIMAL(12,0) to VARCHAR(18)                                   *
+#*                                                      SAK_PGM_ELIG DECIMAL(6,0) to VARCHAR(18)                                    *
+#*                                                      SAK_PUB_HLTH	DECIMAL	(9,0) to VARCHAR(60)                                *
+#*                                                      SAK_FIN_PAYER	DECIMAL	(9,0) to VARCHAR(30)                                *
+#*                                                      CDE_AID_CATEGORY DECIMAL (9,0) to VARCHAR (30)                              *
+#*                                                    File Extract: VEN116FA.PART.D02                                               *
+#*                                                      SAK_AID_ELIG DECIMAL(12,0) to VARCHAR(18)                                   *
 #************************************************************************************************************************************
 
-
-# COMMAND ----------
-
-dbutils.widgets.removeAll()
 
 # COMMAND ----------
 
@@ -39,8 +44,8 @@ dbutils.widgets.removeAll()
 #-----------
 # DBX Parms
 #-----------
-dbutils.widgets.text('s3_location', 's3://gia-stg-oh-ue1-data-raw/haven/inbound/VE_EDW')  
-dbutils.widgets.text('received_date', '/process/ETL_Elig')  
+dbutils.widgets.text('s3_location', 's3://gia-stg-oh-ue1-data-raw/haven/inbound/VE_EDW/weekly/dt=')  
+dbutils.widgets.text('received_date', '2024-03-14')  
 dbutils.widgets.text('catalog', 'oh_apm_stg')  
 dbutils.widgets.text('schema_name', 'vendor_extracts')  
 dbutils.widgets.text('Clng_Month_Gap', '-120')
@@ -340,15 +345,15 @@ df.write.mode("overwrite").saveAsTable(table_name)
 # MAGIC ,DTE_APPLICATION_NBR       DECIMAL (8,0)
 # MAGIC ,NUM_CASE                  STRING
 # MAGIC ,ENRL_SPAN_TYP             STRING
-# MAGIC ,SAK_AID_ELIG              DECIMAL (12,0)
-# MAGIC ,SAK_PGM_ELIG              DECIMAL (6,0)
+# MAGIC ,SAK_AID_ELIG              STRING
+# MAGIC ,SAK_PGM_ELIG              STRING
 # MAGIC ,DTE_EFFECTIVE             DATE
 # MAGIC ,DTE_EFFECTIVE_NBR         DECIMAL (8,0)
 # MAGIC ,DTE_END                   DATE
 # MAGIC ,DTE_END_NBR               DECIMAL (8,0)
 # MAGIC ,CDE_COUNTY                STRING
 # MAGIC ,CDE_LIV_ARNG              STRING
-# MAGIC ,CDE_AID_CATEGORY          DECIMAL (9,0)
+# MAGIC ,CDE_AID_CATEGORY          STRING
 # MAGIC ,SAK_CDE_AID               STRING
 # MAGIC ,CDE_SSI_STATUS            STRING
 # MAGIC ,CDE_RETRO_BCKDT           STRING
@@ -360,8 +365,8 @@ df.write.mode("overwrite").saveAsTable(table_name)
 # MAGIC ,DTE_LAST_UPDATE_NBR       DECIMAL (8,0)
 # MAGIC ,REPORT_DTE                DATE
 # MAGIC ,REPORT_DTE_NBR            DECIMAL (8,0)
-# MAGIC ,SAK_PUB_HLTH              DECIMAL (9,0)
-# MAGIC ,SAK_FIN_PAYER             DECIMAL (9,0)
+# MAGIC ,SAK_PUB_HLTH              STRING
+# MAGIC ,SAK_FIN_PAYER             STRING
 # MAGIC ,CDE_PGM_HEALTH            STRING
 # MAGIC ,DSC_PGM_HEALTH            STRING
 # MAGIC )
@@ -384,15 +389,15 @@ schema = StructType([
 ,StructField("DTE_APPLICATION_NBR"       ,DecimalType (8,0), True)
 ,StructField("NUM_CASE"                  ,StringType(), True)
 ,StructField("ENRL_SPAN_TYP"             ,StringType(), True)
-,StructField("SAK_AID_ELIG"              ,DecimalType (12,0), True)
-,StructField("SAK_PGM_ELIG"              ,DecimalType (6,0), True)
+,StructField("SAK_AID_ELIG"              ,StringType(), True)
+,StructField("SAK_PGM_ELIG"              ,StringType(), True)
 ,StructField("DTE_EFFECTIVE"             ,DateType(), True)
 ,StructField("DTE_EFFECTIVE_NBR"         ,DecimalType (8,0), True)
 ,StructField("DTE_END"                   ,DateType(), True)
 ,StructField("DTE_END_NBR"               ,DecimalType (8,0), True)
 ,StructField("CDE_COUNTY"                ,StringType(), True)
 ,StructField("CDE_LIV_ARNG"              ,StringType(), True)
-,StructField("CDE_AID_CATEGORY"          ,DecimalType (9,0), True)
+,StructField("CDE_AID_CATEGORY"          ,StringType(), True)
 ,StructField("SAK_CDE_AID"               ,StringType(), True)
 ,StructField("CDE_SSI_STATUS"            ,StringType(), True)
 ,StructField("CDE_RETRO_BCKDT"           ,StringType(), True)
@@ -404,8 +409,8 @@ schema = StructType([
 ,StructField("DTE_LAST_UPDATE_NBR"       ,DecimalType (8,0), True)
 ,StructField("REPORT_DTE"                ,DateType(), True)
 ,StructField("REPORT_DTE_NBR"            ,DecimalType (8,0), True)
-,StructField("SAK_PUB_HLTH"              ,DecimalType (9,0), True)
-,StructField("SAK_FIN_PAYER"             ,DecimalType (9,0), True)
+,StructField("SAK_PUB_HLTH"              ,StringType(), True)
+,StructField("SAK_FIN_PAYER"             ,StringType(), True)
 ,StructField("CDE_PGM_HEALTH"            ,StringType(), True)
 ,StructField("DSC_PGM_HEALTH"            ,StringType(), True)
 ])
@@ -427,7 +432,7 @@ df.write.mode("overwrite").saveAsTable(table_name)
 # MAGIC %sql 
 # MAGIC CREATE OR REPLACE TABLE  ${catalog}.${schema_name}.${VEN116FA_PartD02} (
 # MAGIC  SAK_RECIP          DECIMAL (18,0)
-# MAGIC ,SAK_PGM_ELIG       DECIMAL (6,0)
+# MAGIC ,SAK_PGM_ELIG       STRING
 # MAGIC ,SAK_PUB_HLTH       DECIMAL (9,0)
 # MAGIC ,SAK_FIN_PAYER      DECIMAL (9,0)
 # MAGIC ,CDE_PGM_HEALTH     STRING
@@ -446,7 +451,7 @@ print(s3_location_final)
 # Define the schema
 schema = StructType([
  StructField("SAK_RECIP"                 ,DecimalType (18,0), True)
-,StructField("SAK_PGM_ELIG"              ,DecimalType (6,0), True)
+,StructField("SAK_PGM_ELIG"              ,StringType(), True)
 ,StructField("SAK_PUB_HLTH"              ,DecimalType (9,0), True)
 ,StructField("SAK_FIN_PAYER"             ,DecimalType (9,0), True)
 ,StructField("CDE_PGM_HEALTH"            ,StringType(), True)
