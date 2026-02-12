@@ -35,6 +35,7 @@
 #*                                                      CDE_AID_CATEGORY DECIMAL (9,0) to VARCHAR (30)                              *
 #*                                                    File Extract: VEN116FA.PART.D02                                               *
 #*                                                      SAK_AID_ELIG DECIMAL(12,0) to VARCHAR(18)                                   *
+#* 02/11/2026 CCRB70930/CO#43342  Jaime Zavala        Removed PART.D03 and PART.D04 Logic due to EDW Team stoped to produced VE.    *
 #************************************************************************************************************************************
 
 
@@ -58,8 +59,8 @@ dbutils.widgets.text('VEN116FA_PartA',   'EDW_VEN116FA_PartA_Staging')
 dbutils.widgets.text('VEN116FA_PartC',   'EDW_VEN116FA_PartC_Staging')
 dbutils.widgets.text('VEN116FA_PartD01', 'EDW_VEN116FA_PartD01_Staging')
 dbutils.widgets.text('VEN116FA_PartD02', 'EDW_VEN116FA_PartD02_Staging')
-dbutils.widgets.text('VEN116FA_PartD03', 'EDW_VEN116FA_PartD03_Staging')
-dbutils.widgets.text('VEN116FA_PartD04', 'EDW_VEN116FA_PartD04_Staging')
+# dbutils.widgets.text('VEN116FA_PartD03', 'EDW_VEN116FA_PartD03_Staging')
+# dbutils.widgets.text('VEN116FA_PartD04', 'EDW_VEN116FA_PartD04_Staging')
 dbutils.widgets.text('VEN116FA_PartD05', 'EDW_VEN116FA_PartD05_Staging')
 dbutils.widgets.text('VEN116FA_PartE',   'EDW_VEN116FA_PartE_Staging')
 dbutils.widgets.text('VEN116FA_PartH',   'EDW_VEN116FA_PartH_Staging')
@@ -79,8 +80,8 @@ dbutils.widgets.text('VEN116FA_PartA_hist',   'EDW_VEN116FA_PartA_Historic')
 dbutils.widgets.text('VEN116FA_PartC_hist',   'EDW_VEN116FA_PartC_Historic')
 dbutils.widgets.text('VEN116FA_PartD01_hist', 'EDW_VEN116FA_PartD01_Historic')
 dbutils.widgets.text('VEN116FA_PartD02_hist', 'EDW_VEN116FA_PartD02_Historic')
-dbutils.widgets.text('VEN116FA_PartD03_hist', 'EDW_VEN116FA_PartD03_Historic')
-dbutils.widgets.text('VEN116FA_PartD04_hist', 'EDW_VEN116FA_PartD04_Historic')
+# dbutils.widgets.text('VEN116FA_PartD03_hist', 'EDW_VEN116FA_PartD03_Historic')
+# dbutils.widgets.text('VEN116FA_PartD04_hist', 'EDW_VEN116FA_PartD04_Historic')
 dbutils.widgets.text('VEN116FA_PartD05_hist', 'EDW_VEN116FA_PartD05_Historic')
 dbutils.widgets.text('VEN116FA_PartE_hist',   'EDW_VEN116FA_PartE_Historic')
 dbutils.widgets.text('VEN116FA_PartH_hist',   'EDW_VEN116FA_PartH_Historic')
@@ -113,8 +114,8 @@ VEN116FA_PartA   = dbutils.widgets.get('VEN116FA_PartA')
 VEN116FA_PartC   = dbutils.widgets.get('VEN116FA_PartC')
 VEN116FA_PartD01 = dbutils.widgets.get('VEN116FA_PartD01')
 VEN116FA_PartD02 = dbutils.widgets.get('VEN116FA_PartD02')
-VEN116FA_PartD03 = dbutils.widgets.get('VEN116FA_PartD03')
-VEN116FA_PartD04 = dbutils.widgets.get('VEN116FA_PartD04')
+# VEN116FA_PartD03 = dbutils.widgets.get('VEN116FA_PartD03')
+# VEN116FA_PartD04 = dbutils.widgets.get('VEN116FA_PartD04')
 VEN116FA_PartD05 = dbutils.widgets.get('VEN116FA_PartD05')
 VEN116FA_PartE   = dbutils.widgets.get('VEN116FA_PartE')
 VEN116FA_PartH   = dbutils.widgets.get('VEN116FA_PartH')
@@ -134,8 +135,8 @@ VEN116FA_PartA_hist   = dbutils.widgets.get('VEN116FA_PartA_hist')
 VEN116FA_PartC_hist   = dbutils.widgets.get('VEN116FA_PartC_hist')
 VEN116FA_PartD01_hist = dbutils.widgets.get('VEN116FA_PartD01_hist')
 VEN116FA_PartD02_hist = dbutils.widgets.get('VEN116FA_PartD02_hist')
-VEN116FA_PartD03_hist = dbutils.widgets.get('VEN116FA_PartD03_hist')
-VEN116FA_PartD04_hist = dbutils.widgets.get('VEN116FA_PartD04_hist')
+# VEN116FA_PartD03_hist = dbutils.widgets.get('VEN116FA_PartD03_hist')
+# VEN116FA_PartD04_hist = dbutils.widgets.get('VEN116FA_PartD04_hist')
 VEN116FA_PartD05_hist = dbutils.widgets.get('VEN116FA_PartD05_hist')
 VEN116FA_PartE_hist   = dbutils.widgets.get('VEN116FA_PartE_hist')
 VEN116FA_PartH_hist   = dbutils.widgets.get('VEN116FA_PartH_hist')
@@ -165,8 +166,8 @@ print(VEN116FA_PartA)
 print(VEN116FA_PartC)
 print(VEN116FA_PartD01)
 print(VEN116FA_PartD02)
-print(VEN116FA_PartD03)
-print(VEN116FA_PartD04)
+# print(VEN116FA_PartD03)
+# print(VEN116FA_PartD04)
 print(VEN116FA_PartD05)
 print(VEN116FA_PartE)
 print(VEN116FA_PartH)
@@ -186,8 +187,8 @@ print(VEN116FA_PartA_hist)
 print(VEN116FA_PartC_hist)
 print(VEN116FA_PartD01_hist)
 print(VEN116FA_PartD02_hist)
-print(VEN116FA_PartD03_hist)
-print(VEN116FA_PartD04_hist)
+# print(VEN116FA_PartD03_hist)
+# print(VEN116FA_PartD04_hist)
 print(VEN116FA_PartD05_hist)
 print(VEN116FA_PartE_hist)
 print(VEN116FA_PartH_hist)
@@ -474,103 +475,103 @@ df.write.mode("overwrite").saveAsTable(table_name)
 # COMMAND ----------
 
 # DBTITLE 1,EDW_VEN116FA_PartD03_Staging DDL
-# MAGIC %sql 
-# MAGIC CREATE OR REPLACE TABLE  ${catalog}.${schema_name}.${VEN116FA_PartD03} (
-# MAGIC  SAK_RECIP               DECIMAL (18,0)
-# MAGIC ,CDE_MISC_IND_TYPE       STRING
-# MAGIC ,CDE_MISC_IND            STRING
-# MAGIC ,DTE_BUYIN_EFFECTIVE     DATE
-# MAGIC ,DTE_BUYIN_EFFECTIVE_NBR DECIMAL (8,0)
-# MAGIC ,DTE_BUYIN_END           DATE
-# MAGIC ,DTE_BUYIN_END_NBR       DECIMAL (8,0)
-# MAGIC ,REPORT_DTE              DATE
-# MAGIC ,REPORT_DTE_NBR          DECIMAL (8,0)
-# MAGIC )
-# MAGIC
+# %sql 
+# CREATE OR REPLACE TABLE  ${catalog}.${schema_name}.${VEN116FA_PartD03} (
+#  SAK_RECIP               DECIMAL (18,0)
+# ,CDE_MISC_IND_TYPE       STRING
+# ,CDE_MISC_IND            STRING
+# ,DTE_BUYIN_EFFECTIVE     DATE
+# ,DTE_BUYIN_EFFECTIVE_NBR DECIMAL (8,0)
+# ,DTE_BUYIN_END           DATE
+# ,DTE_BUYIN_END_NBR       DECIMAL (8,0)
+# ,REPORT_DTE              DATE
+# ,REPORT_DTE_NBR          DECIMAL (8,0)
+# )
+
 
 # COMMAND ----------
 
 # DBTITLE 1,Load EDW VEN116FA PartD03 Staging Table
-from pyspark.sql.types import StructType, StructField, StringType, DecimalType, DateType, TimestampType
-s3_location_final = f"{s3_location}{received_date}/*116FA*PART.D03*" 
-print(s3_location_final)
-# Define the schema
-schema = StructType([
- StructField("SAK_RECIP"               ,DecimalType (18,0), True)
-,StructField("CDE_MISC_IND_TYPE"       ,StringType(), True)
-,StructField("CDE_MISC_IND"            ,StringType(), True)
-,StructField("DTE_BUYIN_EFFECTIVE"     ,DateType(), True)
-,StructField("DTE_BUYIN_EFFECTIVE_NBR" ,DecimalType (8,0), True)
-,StructField("DTE_BUYIN_END"           ,DateType(), True)
-,StructField("DTE_BUYIN_END_NBR"       ,DecimalType (8,0), True)
-,StructField("REPORT_DTE"              ,DateType(), True)
-,StructField("REPORT_DTE_NBR"          ,DecimalType (8,0), True)
-])
+# from pyspark.sql.types import StructType, StructField, StringType, DecimalType, DateType, TimestampType
+# s3_location_final = f"{s3_location}{received_date}/*116FA*PART.D03*" 
+# print(s3_location_final)
+# # Define the schema
+# schema = StructType([
+#  StructField("SAK_RECIP"               ,DecimalType (18,0), True)
+# ,StructField("CDE_MISC_IND_TYPE"       ,StringType(), True)
+# ,StructField("CDE_MISC_IND"            ,StringType(), True)
+# ,StructField("DTE_BUYIN_EFFECTIVE"     ,DateType(), True)
+# ,StructField("DTE_BUYIN_EFFECTIVE_NBR" ,DecimalType (8,0), True)
+# ,StructField("DTE_BUYIN_END"           ,DateType(), True)
+# ,StructField("DTE_BUYIN_END_NBR"       ,DecimalType (8,0), True)
+# ,StructField("REPORT_DTE"              ,DateType(), True)
+# ,StructField("REPORT_DTE_NBR"          ,DecimalType (8,0), True)
+# ])
 
-table_name = f"{catalog}.{schema_name}.{VEN116FA_PartD03}"
-# Read the CSV files into a DataFrame using the defined schema
-df = spark.read.format("csv") \
-    .option("header", "true") \
-    .option("delimiter", "|") \
-    .schema(schema) \
-    .load(s3_location_final)
+# table_name = f"{catalog}.{schema_name}.{VEN116FA_PartD03}"
+# # Read the CSV files into a DataFrame using the defined schema
+# df = spark.read.format("csv") \
+#     .option("header", "true") \
+#     .option("delimiter", "|") \
+#     .schema(schema) \
+#     .load(s3_location_final)
 
-df.write.mode("overwrite").saveAsTable(table_name)
+# df.write.mode("overwrite").saveAsTable(table_name)
 
 
 # COMMAND ----------
 
 # DBTITLE 1,EDW_VEN116FA_PartD04_Staging DDL
-# MAGIC %sql 
-# MAGIC CREATE OR REPLACE TABLE  ${catalog}.${schema_name}.${VEN116FA_PartD04} (
-# MAGIC  SAK_AID_ELIG      DECIMAL (12,0)
-# MAGIC ,SAK_CASE_XREF     DECIMAL (9,0)
-# MAGIC ,IND_HEALTH_INS    STRING
-# MAGIC ,CDE_FIAT          STRING
-# MAGIC ,CDE_CATEGORY      STRING
-# MAGIC ,DTE_EFFECTIVE     DATE
-# MAGIC ,DTE_EFFECTIVE_NBR DECIMAL (8,0)
-# MAGIC ,DTE_END           DATE
-# MAGIC ,DTE_END_NBR       DECIMAL (8,0)
-# MAGIC ,CDE_STATUS        STRING
-# MAGIC ,CDE_SOURCE        STRING
-# MAGIC ,REPORT_DTE        DATE
-# MAGIC ,REPORT_DTE_NBR    DECIMAL (8,0)
-# MAGIC )
-# MAGIC
+# %sql 
+# CREATE OR REPLACE TABLE  ${catalog}.${schema_name}.${VEN116FA_PartD04} (
+#  SAK_AID_ELIG      DECIMAL (12,0)
+# ,SAK_CASE_XREF     DECIMAL (9,0)
+# ,IND_HEALTH_INS    STRING
+# ,CDE_FIAT          STRING
+# ,CDE_CATEGORY      STRING
+# ,DTE_EFFECTIVE     DATE
+# ,DTE_EFFECTIVE_NBR DECIMAL (8,0)
+# ,DTE_END           DATE
+# ,DTE_END_NBR       DECIMAL (8,0)
+# ,CDE_STATUS        STRING
+# ,CDE_SOURCE        STRING
+# ,REPORT_DTE        DATE
+# ,REPORT_DTE_NBR    DECIMAL (8,0)
+# )
+
 
 # COMMAND ----------
 
 # DBTITLE 1,Load EDW VEN116FA PartD04 Staging Table
-from pyspark.sql.types import StructType, StructField, StringType, DecimalType, DateType, TimestampType
-s3_location_final = f"{s3_location}{received_date}/*116FA*PART.D04*" 
-print(s3_location_final)
-# Define the schema
-schema = StructType([
- StructField("SAK_AID_ELIG"      ,DecimalType (12,0), True)
-,StructField("SAK_CASE_XREF"     ,DecimalType (9,0), True)
-,StructField("IND_HEALTH_INS"    ,StringType(), True)
-,StructField("CDE_FIAT"          ,StringType(), True)
-,StructField("CDE_CATEGORY"      ,StringType(), True)
-,StructField("DTE_EFFECTIVE"     ,DateType(), True)
-,StructField("DTE_EFFECTIVE_NBR" ,DecimalType (8,0), True)
-,StructField("DTE_END"           ,DateType(), True)
-,StructField("DTE_END_NBR"       ,DecimalType (8,0), True)
-,StructField("CDE_STATUS"        ,StringType(), True)
-,StructField("CDE_SOURCE"        ,StringType(), True)
-,StructField("REPORT_DTE"        ,DateType(), True)
-,StructField("REPORT_DTE_NBR"    ,DecimalType (8,0), True)
-])
+# from pyspark.sql.types import StructType, StructField, StringType, DecimalType, DateType, TimestampType
+# s3_location_final = f"{s3_location}{received_date}/*116FA*PART.D04*" 
+# print(s3_location_final)
+# # Define the schema
+# schema = StructType([
+#  StructField("SAK_AID_ELIG"      ,DecimalType (12,0), True)
+# ,StructField("SAK_CASE_XREF"     ,DecimalType (9,0), True)
+# ,StructField("IND_HEALTH_INS"    ,StringType(), True)
+# ,StructField("CDE_FIAT"          ,StringType(), True)
+# ,StructField("CDE_CATEGORY"      ,StringType(), True)
+# ,StructField("DTE_EFFECTIVE"     ,DateType(), True)
+# ,StructField("DTE_EFFECTIVE_NBR" ,DecimalType (8,0), True)
+# ,StructField("DTE_END"           ,DateType(), True)
+# ,StructField("DTE_END_NBR"       ,DecimalType (8,0), True)
+# ,StructField("CDE_STATUS"        ,StringType(), True)
+# ,StructField("CDE_SOURCE"        ,StringType(), True)
+# ,StructField("REPORT_DTE"        ,DateType(), True)
+# ,StructField("REPORT_DTE_NBR"    ,DecimalType (8,0), True)
+# ])
 
-table_name = f"{catalog}.{schema_name}.{VEN116FA_PartD04}"
-# Read the CSV files into a DataFrame using the defined schema
-df = spark.read.format("csv") \
-    .option("header", "true") \
-    .option("delimiter", "|") \
-    .schema(schema) \
-    .load(s3_location_final)
+# table_name = f"{catalog}.{schema_name}.{VEN116FA_PartD04}"
+# # Read the CSV files into a DataFrame using the defined schema
+# df = spark.read.format("csv") \
+#     .option("header", "true") \
+#     .option("delimiter", "|") \
+#     .schema(schema) \
+#     .load(s3_location_final)
 
-df.write.mode("overwrite").saveAsTable(table_name)
+# df.write.mode("overwrite").saveAsTable(table_name)
 
 
 # COMMAND ----------
@@ -1631,18 +1632,18 @@ df.write.mode("overwrite").saveAsTable(table_name)
 # COMMAND ----------
 
 # DBTITLE 1,Load EDW VEN116FA PartD03 Historic Table
-# MAGIC %sql
-# MAGIC INSERT INTO ${catalog}.${schema_name}.${VEN116FA_PartD03_hist} (
-# MAGIC SELECT current_timestamp() AS EXTRACTION_DATE, * FROM ${catalog}.${schema_name}.${VEN116FA_PartD03} )
-# MAGIC
+# %sql
+# INSERT INTO ${catalog}.${schema_name}.${VEN116FA_PartD03_hist} (
+# SELECT current_timestamp() AS EXTRACTION_DATE, * FROM ${catalog}.${schema_name}.${VEN116FA_PartD03} )
+
 
 # COMMAND ----------
 
 # DBTITLE 1,Load EDW VEN116FA PartD04 Historic Table
-# MAGIC %sql
-# MAGIC INSERT INTO ${catalog}.${schema_name}.${VEN116FA_PartD04_hist} (
-# MAGIC SELECT current_timestamp() AS EXTRACTION_DATE, * FROM ${catalog}.${schema_name}.${VEN116FA_PartD04} )
-# MAGIC
+# %sql
+# INSERT INTO ${catalog}.${schema_name}.${VEN116FA_PartD04_hist} (
+# SELECT current_timestamp() AS EXTRACTION_DATE, * FROM ${catalog}.${schema_name}.${VEN116FA_PartD04} )
+
 
 # COMMAND ----------
 
@@ -1768,18 +1769,18 @@ df.write.mode("overwrite").saveAsTable(table_name)
 # COMMAND ----------
 
 # DBTITLE 1,Cleaning VEN116FA PartD03 Historic Table
-# MAGIC %sql
-# MAGIC DELETE FROM ${catalog}.${schema_name}.${VEN116FA_PartD03_hist}
-# MAGIC WHERE EXTRACTION_DATE < ADD_MONTHS(CURRENT_TIMESTAMP(),${Clng_Month_Gap})
-# MAGIC ;
+# %sql
+# DELETE FROM ${catalog}.${schema_name}.${VEN116FA_PartD03_hist}
+# WHERE EXTRACTION_DATE < ADD_MONTHS(CURRENT_TIMESTAMP(),${Clng_Month_Gap})
+# ;
 
 # COMMAND ----------
 
 # DBTITLE 1,Cleaning VEN116FA PartD04 Historic Table
-# MAGIC %sql
-# MAGIC DELETE FROM ${catalog}.${schema_name}.${VEN116FA_PartD04_hist}
-# MAGIC WHERE EXTRACTION_DATE < ADD_MONTHS(CURRENT_TIMESTAMP(),${Clng_Month_Gap})
-# MAGIC ;
+# %sql
+# DELETE FROM ${catalog}.${schema_name}.${VEN116FA_PartD04_hist}
+# WHERE EXTRACTION_DATE < ADD_MONTHS(CURRENT_TIMESTAMP(),${Clng_Month_Gap})
+# ;
 
 # COMMAND ----------
 

@@ -1,4 +1,34 @@
 # Databricks notebook source
+#************************************************************************************************************************************
+#*                                                                                                                                  *
+#*   NOTEBOOK:     ETL_Eligibility_Analytics.                                                                                       *
+#*                                                                                                                                  *
+#*   DESCRIPTION:                                                                                                                   *
+#*                                                                                                                                  *
+#*                                                                                                                                  *
+#*   INPUT PARMS:                                                                                                                   *
+#*                                                                                                                                  *
+#*                                                                                                                                  *
+#*   INPUT FILES:                                                                                                                   *
+#*                                                                                                                                  *
+#*                                                                                                                                  *
+#*   OUTPUT FILE:                                                                                                                   *
+#*                                                                                                                                  *
+#*   EXITS:       0 - success                                                                                                       *
+#*                <> 0 - failure                                                                                                    *
+#*                                                                                                                                  *
+#************************************************************************************************************************************
+#*                                                                                                                                  *
+#*                                                 Modification Log                                                                 *
+#*                                                                                                                                  *
+#*    Date     CO                 Author              Description                                                                   *
+#* ---------- ------------------  -----------------   ------------------------------------------------------------------------------*
+#* 02/11/2026 CCRB70930/CO#43342  Jaime Zavala        Removed PART.D03 and PART.D04 Logic due to EDW Team stoped to produced VE.    *
+#************************************************************************************************************************************
+
+
+# COMMAND ----------
+
 # DBTITLE 1,Parameters
 #-----------
 # DBX Parms
@@ -13,8 +43,8 @@ dbutils.widgets.text('VEN116FA_PartA',   'EDW_VEN116FA_PartA_Staging')
 dbutils.widgets.text('VEN116FA_PartC',   'EDW_VEN116FA_PartC_Staging')
 dbutils.widgets.text('VEN116FA_PartD01', 'EDW_VEN116FA_PartD01_Staging')
 dbutils.widgets.text('VEN116FA_PartD02', 'EDW_VEN116FA_PartD02_Staging')
-dbutils.widgets.text('VEN116FA_PartD03', 'EDW_VEN116FA_PartD03_Staging')
-dbutils.widgets.text('VEN116FA_PartD04', 'EDW_VEN116FA_PartD04_Staging')
+# dbutils.widgets.text('VEN116FA_PartD03', 'EDW_VEN116FA_PartD03_Staging')
+# dbutils.widgets.text('VEN116FA_PartD04', 'EDW_VEN116FA_PartD04_Staging')
 dbutils.widgets.text('VEN116FA_PartD05', 'EDW_VEN116FA_PartD05_Staging')
 dbutils.widgets.text('VEN116FA_PartE',   'EDW_VEN116FA_PartE_Staging')
 dbutils.widgets.text('VEN116FA_PartH',   'EDW_VEN116FA_PartH_Staging')
@@ -29,7 +59,7 @@ dbutils.widgets.text('VEN116FA_PartO',   'EDW_VEN116FA_PartO_Staging')
 #--------------------
 # Analytics Tables
 #--------------------
-dbutils.widgets.text('Elig_Analytics', 'EDW_temp_Eligibility_Analytics')
+dbutils.widgets.text('Elig_Analytics', 'Eligibility_Analytics')
 
 
 # COMMAND ----------
@@ -48,8 +78,8 @@ VEN116FA_PartA   = dbutils.widgets.get('VEN116FA_PartA')
 VEN116FA_PartC   = dbutils.widgets.get('VEN116FA_PartC')
 VEN116FA_PartD01 = dbutils.widgets.get('VEN116FA_PartD01')
 VEN116FA_PartD02 = dbutils.widgets.get('VEN116FA_PartD02')
-VEN116FA_PartD03 = dbutils.widgets.get('VEN116FA_PartD03')
-VEN116FA_PartD04 = dbutils.widgets.get('VEN116FA_PartD04')
+# VEN116FA_PartD03 = dbutils.widgets.get('VEN116FA_PartD03')
+# VEN116FA_PartD04 = dbutils.widgets.get('VEN116FA_PartD04')
 VEN116FA_PartD05 = dbutils.widgets.get('VEN116FA_PartD05')
 VEN116FA_PartE   = dbutils.widgets.get('VEN116FA_PartE')
 VEN116FA_PartH   = dbutils.widgets.get('VEN116FA_PartH')
@@ -80,8 +110,8 @@ print(VEN116FA_PartA)
 print(VEN116FA_PartC)
 print(VEN116FA_PartD01)
 print(VEN116FA_PartD02)
-print(VEN116FA_PartD03)
-print(VEN116FA_PartD04)
+# print(VEN116FA_PartD03)
+# print(VEN116FA_PartD04)
 print(VEN116FA_PartD05)
 print(VEN116FA_PartE)
 print(VEN116FA_PartH)
@@ -651,12 +681,12 @@ spark = SparkSession.builder \
 # MAGIC ) y
 # MAGIC GROUP BY 1,2,3;
 # MAGIC
-# MAGIC -- Second part of the code
-# MAGIC CREATE OR REPLACE TEMPORARY VIEW storedIHI AS
-# MAGIC SELECT DISTINCT sak_recip, d01.dte_effective, d01.dte_end,
-# MAGIC   FIRST_VALUE(IND_HEALTH_INS) OVER (PARTITION BY sak_recip, d01.dte_effective, d01.dte_end ORDER BY d04.dte_end DESC, d04.dte_effective) AS IND_HEALTH_INS
-# MAGIC FROM ${catalog}.${schema_name}.${VEN116FA_PartD01} d01
-# MAGIC JOIN ${catalog}.${schema_name}.${VEN116FA_PartD04} d04 ON d01.SAK_AID_ELIG=d04.SAK_AID_ELIG;
+# MAGIC -- -- Second part of the code
+# MAGIC -- CREATE OR REPLACE TEMPORARY VIEW storedIHI AS
+# MAGIC -- SELECT DISTINCT sak_recip, d01.dte_effective, d01.dte_end,
+# MAGIC --   FIRST_VALUE(IND_HEALTH_INS) OVER (PARTITION BY sak_recip, d01.dte_effective, d01.dte_end ORDER BY d04.dte_end DESC, d04.dte_effective) AS IND_HEALTH_INS
+# MAGIC -- FROM ${catalog}.${schema_name}.${VEN116FA_PartD01} d01
+# MAGIC -- JOIN ${catalog}.${schema_name}.${VEN116FA_PartD04} d04 ON d01.SAK_AID_ELIG=d04.SAK_AID_ELIG;
 # MAGIC
 # MAGIC -- Third part of the code
 # MAGIC CREATE OR REPLACE TEMPORARY VIEW storedRSN AS
@@ -681,161 +711,161 @@ spark = SparkSession.builder \
 # MAGIC ) y
 # MAGIC GROUP BY 1,2,3;
 # MAGIC
-# MAGIC -- Fourth part of the code
-# MAGIC CREATE OR REPLACE TEMPORARY VIEW storedMSC AS
-# MAGIC SELECT DISTINCT sak_recip,
-# MAGIC   '' ||
-# MAGIC   RPAD(MAX(CASE WHEN SEQ_MISC_IND_TYPE=1 THEN CDE_MISC_IND_TYPE ELSE '' END), 3) ||
-# MAGIC   RPAD(MAX(CASE WHEN SEQ_MISC_IND_TYPE=2 THEN CDE_MISC_IND_TYPE ELSE '' END), 3) ||
-# MAGIC   RPAD(MAX(CASE WHEN SEQ_MISC_IND_TYPE=3 THEN CDE_MISC_IND_TYPE ELSE '' END), 3) ||
-# MAGIC   RPAD(MAX(CASE WHEN SEQ_MISC_IND_TYPE=4 THEN CDE_MISC_IND_TYPE ELSE '' END), 3) ||
-# MAGIC   RPAD(MAX(CASE WHEN SEQ_MISC_IND_TYPE=5 THEN CDE_MISC_IND_TYPE ELSE '' END), 3) ||
-# MAGIC   RPAD(MAX(CASE WHEN SEQ_MISC_IND_TYPE=6 THEN CDE_MISC_IND_TYPE ELSE '' END), 3) AS CDE_MISC_IND_TYPE,
-# MAGIC   '' ||
-# MAGIC   RPAD(MAX(CASE WHEN SEQ_MISC_IND_TYPE=1 THEN CDE_MISC_IND ELSE '' END), 3) ||
-# MAGIC   RPAD(MAX(CASE WHEN SEQ_MISC_IND_TYPE=2 THEN CDE_MISC_IND ELSE '' END), 3) ||
-# MAGIC   RPAD(MAX(CASE WHEN SEQ_MISC_IND_TYPE=3 THEN CDE_MISC_IND ELSE '' END), 3) ||
-# MAGIC   RPAD(MAX(CASE WHEN SEQ_MISC_IND_TYPE=4 THEN CDE_MISC_IND ELSE '' END), 3) ||
-# MAGIC   RPAD(MAX(CASE WHEN SEQ_MISC_IND_TYPE=5 THEN CDE_MISC_IND ELSE '' END), 3) ||
-# MAGIC   RPAD(MAX(CASE WHEN SEQ_MISC_IND_TYPE=6 THEN CDE_MISC_IND ELSE '' END), 3) AS CDE_MISC_IND
-# MAGIC FROM (
-# MAGIC   SELECT *,
-# MAGIC     ROW_NUMBER() OVER (PARTITION BY sak_recip ORDER BY CDE_MISC_IND_TYPE) AS SEQ_MISC_IND_TYPE
-# MAGIC   FROM (
-# MAGIC     SELECT DISTINCT
-# MAGIC       sak_recip,
-# MAGIC       CDE_MISC_IND_TYPE,
-# MAGIC       CDE_MISC_IND
-# MAGIC     FROM ${catalog}.${schema_name}.${VEN116FA_PartD03}
-# MAGIC   ) x
-# MAGIC ) y
-# MAGIC GROUP BY 1;
+# MAGIC -- -- Fourth part of the code
+# MAGIC -- CREATE OR REPLACE TEMPORARY VIEW storedMSC AS
+# MAGIC -- SELECT DISTINCT sak_recip,
+# MAGIC --   '' ||
+# MAGIC --   RPAD(MAX(CASE WHEN SEQ_MISC_IND_TYPE=1 THEN CDE_MISC_IND_TYPE ELSE '' END), 3) ||
+# MAGIC --   RPAD(MAX(CASE WHEN SEQ_MISC_IND_TYPE=2 THEN CDE_MISC_IND_TYPE ELSE '' END), 3) ||
+# MAGIC --   RPAD(MAX(CASE WHEN SEQ_MISC_IND_TYPE=3 THEN CDE_MISC_IND_TYPE ELSE '' END), 3) ||
+# MAGIC --   RPAD(MAX(CASE WHEN SEQ_MISC_IND_TYPE=4 THEN CDE_MISC_IND_TYPE ELSE '' END), 3) ||
+# MAGIC --   RPAD(MAX(CASE WHEN SEQ_MISC_IND_TYPE=5 THEN CDE_MISC_IND_TYPE ELSE '' END), 3) ||
+# MAGIC --   RPAD(MAX(CASE WHEN SEQ_MISC_IND_TYPE=6 THEN CDE_MISC_IND_TYPE ELSE '' END), 3) AS CDE_MISC_IND_TYPE,
+# MAGIC --   '' ||
+# MAGIC --   RPAD(MAX(CASE WHEN SEQ_MISC_IND_TYPE=1 THEN CDE_MISC_IND ELSE '' END), 3) ||
+# MAGIC --   RPAD(MAX(CASE WHEN SEQ_MISC_IND_TYPE=2 THEN CDE_MISC_IND ELSE '' END), 3) ||
+# MAGIC --   RPAD(MAX(CASE WHEN SEQ_MISC_IND_TYPE=3 THEN CDE_MISC_IND ELSE '' END), 3) ||
+# MAGIC --   RPAD(MAX(CASE WHEN SEQ_MISC_IND_TYPE=4 THEN CDE_MISC_IND ELSE '' END), 3) ||
+# MAGIC --   RPAD(MAX(CASE WHEN SEQ_MISC_IND_TYPE=5 THEN CDE_MISC_IND ELSE '' END), 3) ||
+# MAGIC --   RPAD(MAX(CASE WHEN SEQ_MISC_IND_TYPE=6 THEN CDE_MISC_IND ELSE '' END), 3) AS CDE_MISC_IND
+# MAGIC -- FROM (
+# MAGIC --   SELECT *,
+# MAGIC --     ROW_NUMBER() OVER (PARTITION BY sak_recip ORDER BY CDE_MISC_IND_TYPE) AS SEQ_MISC_IND_TYPE
+# MAGIC --   FROM (
+# MAGIC --     SELECT DISTINCT
+# MAGIC --       sak_recip,
+# MAGIC --       CDE_MISC_IND_TYPE,
+# MAGIC --       CDE_MISC_IND
+# MAGIC --     FROM ${catalog}.${schema_name}.${VEN116FA_PartD03}
+# MAGIC --   ) x
+# MAGIC -- ) y
+# MAGIC -- GROUP BY 1;
 # MAGIC
 # MAGIC -- Main insert part
-# MAGIC INSERT INTO ${catalog}.${schema_name}.${Elig_Analytics}
-# MAGIC (
-# MAGIC   --COMMON HEADER
-# MAGIC   ID_MEDICAID1,
-# MAGIC   ID_MEDICAID2,
-# MAGIC   SAK_RECIP,
-# MAGIC   ID_MED_RECIP_PREV,
-# MAGIC   ID_MEDICARE,
-# MAGIC   ID_MBI_CMS,
-# MAGIC   DERIVED1,
-# MAGIC   NUM_CASE,
-# MAGIC   Derived2,
-# MAGIC   --SPECIFIC FIELDS
-# MAGIC   D_DTE_EFFECTIVE,
-# MAGIC   D_DTE_END,
-# MAGIC   D_CDE_COUNTY,
-# MAGIC   D_IND_HEALTH_INS,
-# MAGIC   D_CDE_LIV_ARNG,
-# MAGIC   D_CDE_AID_CATEGORY,
-# MAGIC   D_SAK_CDE_AID,
-# MAGIC   D_CDE_AID_ELIG_REASON,
-# MAGIC   D_CDE_BUY_SSI,
-# MAGIC   D_CDE_RETRO_BCKDT,
-# MAGIC   D_CDE_PGM_HEALTH,
-# MAGIC   D_CDE_MISC_IND_TYPE,
-# MAGIC   D_CDE_MISC_IND,
-# MAGIC   D_DTE_LAST_UPDATE,
-# MAGIC   --None Applicable Fields
-# MAGIC   CDE_STATUS,
-# MAGIC   SAK_PUB_HLTH,
-# MAGIC   ASSIGN_PLAN,
-# MAGIC   A_DTE_EFFECTIVE,
-# MAGIC   A_DTE_END,
-# MAGIC   SAK_PROV_LOC,
-# MAGIC   CDE_REASON,
-# MAGIC   FILLER1,
-# MAGIC   CDE_SPEC_COND,
-# MAGIC   C_DTE_EFFECTIVE,
-# MAGIC   C_DTE_END,
-# MAGIC   FILLER2,
-# MAGIC   NA1,
-# MAGIC   NA2,
-# MAGIC   NA3,
-# MAGIC   NA4,
-# MAGIC   E_DTE_EFFECTIVE,
-# MAGIC   E_DTE_END,
-# MAGIC   E_ID_PROVIDER_MCAID,
-# MAGIC   NA5,
-# MAGIC   E_CDE_RSN_MC_STOP,
-# MAGIC   E_CDE_RSN_MC_START,
-# MAGIC   NA6,
-# MAGIC   H_DTE_EFFECTIVE,
-# MAGIC   H_DTE_END,
-# MAGIC   NA7,
-# MAGIC   H_CDE_WAIVER,
-# MAGIC   H_CDE_LOC,
-# MAGIC   NA8,
-# MAGIC   I_DTE_EFFECTIVE,
-# MAGIC   I_DTE_END,
-# MAGIC   I_IND_RETRO,
-# MAGIC   I_ID_MEDICARE,
-# MAGIC   NA9,
-# MAGIC   NA10,
-# MAGIC   I_DTE_LAST_UPDATE,
-# MAGIC   I_CDE_SOURCE,
-# MAGIC   NA11,
-# MAGIC   J_DTE_VENDOR_PAY_BEGIN,
-# MAGIC   J_DTE_VENDOR_PAY_END,
-# MAGIC   NA12,
-# MAGIC   NA13,
-# MAGIC   J_CDE_LEVEL_OF_CARE,
-# MAGIC   J_ID_PROVIDER_MCAID,
-# MAGIC   NA14,
-# MAGIC   J_CDE_STATUS,
-# MAGIC   J_IND_BACKPAY,
-# MAGIC   NA15,
-# MAGIC   NA16,
-# MAGIC   NA17,
-# MAGIC   NA18,
-# MAGIC   K_DTE_EFFECTIVE,
-# MAGIC   K_DTE_END,
-# MAGIC   K_CDE_PROV_TYPE_PRIM,
-# MAGIC   K_ID_PROVIDER_MCAID,
-# MAGIC   NA19,
-# MAGIC   L_DTE_EFFECTIVE,
-# MAGIC   L_DTE_END,
-# MAGIC   L_IND_RETRO,
-# MAGIC   L_ID_MEDICARE,
-# MAGIC   NA20,
-# MAGIC   NA21,
-# MAGIC   L_DTE_LAST_UPDATE,
-# MAGIC   L_CDE_SOURCE,
-# MAGIC   L_IND_FREE,
-# MAGIC   NA22,
-# MAGIC   N_DTE_TPL_EFFECTIVE,
-# MAGIC   N_DTE_TPL_END,
-# MAGIC   N_CDE_COVERAGE,
-# MAGIC   NA23,
-# MAGIC   G_DTE_EFFECTIVE,
-# MAGIC   G_DTE_END1,
-# MAGIC   G_DTE_LAST_UPDATED,
-# MAGIC   NA24,
-# MAGIC   G_AMT_CLAWBACK,
-# MAGIC   G_ID_PLAN,
-# MAGIC   G_NAM_PLAN,
-# MAGIC   G_CDE_DUAL_STATUS,
-# MAGIC   G_CDE_REC_TYPE,
-# MAGIC   G_DTE_START,
-# MAGIC   G_DTE_END2,
-# MAGIC   G_TXT_LIS,
-# MAGIC   NA25,
-# MAGIC   G_TXT_COPAY,
-# MAGIC   G_ID_CONTRACT,
-# MAGIC   NA26,
-# MAGIC   G_DTE_1ST_PARTD,
-# MAGIC   O_NUM_CONTRACT,
-# MAGIC   O_DTE_EFFECTIVE,
-# MAGIC   O_DTE_END,
-# MAGIC   O_IND_SNP,
-# MAGIC   O_DTE_LAST_UPDATE,
-# MAGIC   O_TXT_ORGANIZATION_NAME,
-# MAGIC   O_TXT_PLAN_NAME,
-# MAGIC   NA27
-# MAGIC )
+# MAGIC -- INSERT INTO ${catalog}.${schema_name}.${Elig_Analytics}
+# MAGIC -- (
+# MAGIC --   --COMMON HEADER
+# MAGIC --   ID_MEDICAID1,
+# MAGIC --   ID_MEDICAID2,
+# MAGIC --   SAK_RECIP,
+# MAGIC --   ID_MED_RECIP_PREV,
+# MAGIC --   ID_MEDICARE,
+# MAGIC --   ID_MBI_CMS,
+# MAGIC --   DERIVED1,
+# MAGIC --   NUM_CASE,
+# MAGIC --   Derived2,
+# MAGIC --   --SPECIFIC FIELDS
+# MAGIC --   D_DTE_EFFECTIVE,
+# MAGIC --   D_DTE_END,
+# MAGIC --   D_CDE_COUNTY,
+# MAGIC --   D_IND_HEALTH_INS,
+# MAGIC --   D_CDE_LIV_ARNG,
+# MAGIC --   D_CDE_AID_CATEGORY,
+# MAGIC --   D_SAK_CDE_AID,
+# MAGIC --   D_CDE_AID_ELIG_REASON,
+# MAGIC --   D_CDE_BUY_SSI,
+# MAGIC --   D_CDE_RETRO_BCKDT,
+# MAGIC --   D_CDE_PGM_HEALTH,
+# MAGIC --   D_CDE_MISC_IND_TYPE,
+# MAGIC --   D_CDE_MISC_IND,
+# MAGIC --   D_DTE_LAST_UPDATE,
+# MAGIC --   --None Applicable Fields
+# MAGIC --   CDE_STATUS,
+# MAGIC --   SAK_PUB_HLTH,
+# MAGIC --   ASSIGN_PLAN,
+# MAGIC --   A_DTE_EFFECTIVE,
+# MAGIC --   A_DTE_END,
+# MAGIC --   SAK_PROV_LOC,
+# MAGIC --   CDE_REASON,
+# MAGIC --   FILLER1,
+# MAGIC --   CDE_SPEC_COND,
+# MAGIC --   C_DTE_EFFECTIVE,
+# MAGIC --   C_DTE_END,
+# MAGIC --   FILLER2,
+# MAGIC --   NA1,
+# MAGIC --   NA2,
+# MAGIC --   NA3,
+# MAGIC --   NA4,
+# MAGIC --   E_DTE_EFFECTIVE,
+# MAGIC --   E_DTE_END,
+# MAGIC --   E_ID_PROVIDER_MCAID,
+# MAGIC --   NA5,
+# MAGIC --   E_CDE_RSN_MC_STOP,
+# MAGIC --   E_CDE_RSN_MC_START,
+# MAGIC --   NA6,
+# MAGIC --   H_DTE_EFFECTIVE,
+# MAGIC --   H_DTE_END,
+# MAGIC --   NA7,
+# MAGIC --   H_CDE_WAIVER,
+# MAGIC --   H_CDE_LOC,
+# MAGIC --   NA8,
+# MAGIC --   I_DTE_EFFECTIVE,
+# MAGIC --   I_DTE_END,
+# MAGIC --   I_IND_RETRO,
+# MAGIC --   I_ID_MEDICARE,
+# MAGIC --   NA9,
+# MAGIC --   NA10,
+# MAGIC --   I_DTE_LAST_UPDATE,
+# MAGIC --   I_CDE_SOURCE,
+# MAGIC --   NA11,
+# MAGIC --   J_DTE_VENDOR_PAY_BEGIN,
+# MAGIC --   J_DTE_VENDOR_PAY_END,
+# MAGIC --   NA12,
+# MAGIC --   NA13,
+# MAGIC --   J_CDE_LEVEL_OF_CARE,
+# MAGIC --   J_ID_PROVIDER_MCAID,
+# MAGIC --   NA14,
+# MAGIC --   J_CDE_STATUS,
+# MAGIC --   J_IND_BACKPAY,
+# MAGIC --   NA15,
+# MAGIC --   NA16,
+# MAGIC --   NA17,
+# MAGIC --   NA18,
+# MAGIC --   K_DTE_EFFECTIVE,
+# MAGIC --   K_DTE_END,
+# MAGIC --   K_CDE_PROV_TYPE_PRIM,
+# MAGIC --   K_ID_PROVIDER_MCAID,
+# MAGIC --   NA19,
+# MAGIC --   L_DTE_EFFECTIVE,
+# MAGIC --   L_DTE_END,
+# MAGIC --   L_IND_RETRO,
+# MAGIC --   L_ID_MEDICARE,
+# MAGIC --   NA20,
+# MAGIC --   NA21,
+# MAGIC --   L_DTE_LAST_UPDATE,
+# MAGIC --   L_CDE_SOURCE,
+# MAGIC --   L_IND_FREE,
+# MAGIC --   NA22,
+# MAGIC --   N_DTE_TPL_EFFECTIVE,
+# MAGIC --   N_DTE_TPL_END,
+# MAGIC --   N_CDE_COVERAGE,
+# MAGIC --   NA23,
+# MAGIC --   G_DTE_EFFECTIVE,
+# MAGIC --   G_DTE_END1,
+# MAGIC --   G_DTE_LAST_UPDATED,
+# MAGIC --   NA24,
+# MAGIC --   G_AMT_CLAWBACK,
+# MAGIC --   G_ID_PLAN,
+# MAGIC --   G_NAM_PLAN,
+# MAGIC --   G_CDE_DUAL_STATUS,
+# MAGIC --   G_CDE_REC_TYPE,
+# MAGIC --   G_DTE_START,
+# MAGIC --   G_DTE_END2,
+# MAGIC --   G_TXT_LIS,
+# MAGIC --   NA25,
+# MAGIC --   G_TXT_COPAY,
+# MAGIC --   G_ID_CONTRACT,
+# MAGIC --   NA26,
+# MAGIC --   G_DTE_1ST_PARTD,
+# MAGIC --   O_NUM_CONTRACT,
+# MAGIC --   O_DTE_EFFECTIVE,
+# MAGIC --   O_DTE_END,
+# MAGIC --   O_IND_SNP,
+# MAGIC --   O_DTE_LAST_UPDATE,
+# MAGIC --   O_TXT_ORGANIZATION_NAME,
+# MAGIC --   O_TXT_PLAN_NAME,
+# MAGIC --   NA27
+# MAGIC -- )
 # MAGIC SELECT DISTINCT
 # MAGIC   --COMMON HEADER
 # MAGIC   TRIM(ID_MEDICAID) AS ID_MEDICAID1,
@@ -851,7 +881,7 @@ spark = SparkSession.builder \
 # MAGIC   CASE WHEN elg.DTE_EFFECTIVE IS NULL THEN '' ELSE CAST(DATE_FORMAT(CAST(elg.DTE_EFFECTIVE AS DATE),'MM/dd/y') AS STRING) END,
 # MAGIC   CASE WHEN elg.DTE_END IS NULL THEN '' ELSE CAST(DATE_FORMAT(CAST(elg.DTE_END AS DATE),'MM/dd/y') AS STRING) END,
 # MAGIC   TRIM(CDE_COUNTY),
-# MAGIC   TRIM(IND_HEALTH_INS),
+# MAGIC   NULL, -- TRIM(IND_HEALTH_INS),
 # MAGIC   TRIM(CDE_LIV_ARNG),
 # MAGIC   CDE_AID_CATEGORY::VARCHAR(255),
 # MAGIC   TRIM(SAK_CDE_AID),
@@ -859,8 +889,8 @@ spark = SparkSession.builder \
 # MAGIC   TRIM(CDE_SSI_STATUS),
 # MAGIC   TRIM(CDE_RETRO_BCKDT),
 # MAGIC   pmg.CDE_PGM_HEALTH::CHAR(30),
-# MAGIC   CDE_MISC_IND_TYPE::CHAR(18),
-# MAGIC   CDE_MISC_IND::CHAR(18),
+# MAGIC   NULL, -- CDE_MISC_IND_TYPE::CHAR(18),
+# MAGIC   NULL, -- CDE_MISC_IND::CHAR(18),
 # MAGIC   MAX(DTE_LAST_UPDATE) OVER (PARTITION BY elg.sak_recip, elg.dte_effective, elg.dte_end)::VARCHAR(255),
 # MAGIC   --None Applicable Fields
 # MAGIC   NULL AS CDE_STATUS,
@@ -960,9 +990,9 @@ spark = SparkSession.builder \
 # MAGIC   NULL AS NA27
 # MAGIC FROM ${catalog}.${schema_name}.${VEN116FA_PartD01} elg
 # MAGIC LEFT JOIN storedPMG pmg ON elg.sak_recip=pmg.sak_recip AND elg.dte_effective=pmg.dte_effective AND elg.dte_end=pmg.dte_end
-# MAGIC LEFT JOIN storedIHI ihi ON elg.sak_recip=ihi.sak_recip AND elg.dte_effective=ihi.dte_effective AND elg.dte_end=ihi.dte_end
+# MAGIC -- LEFT JOIN storedIHI ihi ON elg.sak_recip=ihi.sak_recip AND elg.dte_effective=ihi.dte_effective AND elg.dte_end=ihi.dte_end
 # MAGIC LEFT JOIN storedRSN rsn ON elg.sak_recip=rsn.sak_recip AND elg.dte_effective=rsn.dte_effective AND elg.dte_end=rsn.dte_end
-# MAGIC LEFT JOIN storedMSC msc ON elg.sak_recip=msc.sak_recip
+# MAGIC -- LEFT JOIN storedMSC msc ON elg.sak_recip=msc.sak_recip
 # MAGIC ;
 # MAGIC
 
