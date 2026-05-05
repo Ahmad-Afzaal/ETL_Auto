@@ -1,0 +1,130 @@
+resources:
+  jobs:
+    EDW_ETL_Provider_Job:
+      name: EDW ETL Provider Job
+      tasks:
+        - task_key: ETL_Provider_Load_VE
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Provider/ETL_Provider_VE_Load
+            base_parameters:
+              catalog: oh_apm_stg
+              received_date: 2024-04-02
+              Clng_Month_Gap: "-120"
+              schema_name: archive_vendor_extracts
+              s3_location: s3://gia-stg-oh-ue1-data-raw/haven/inbound/VE_EDW/weekly/dt=
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: ETL_Prov_Analytics
+          depends_on:
+            - task_key: ETL_Provider_Load_VE
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Provider/ETL_Provider_Analytics
+            base_parameters:
+              catalog: oh_apm_stg
+              schema_name: archive_vendor_extracts
+              ven117fa: EDW_temp_ven117fa
+              Prov_Analytics: EDW_temp_Provider_Analytics
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: ETL_Prov_Load_VE_CTL
+          depends_on:
+            - task_key: ETL_Provider_Load_VE
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Provider/ETL_Prov_Load_VE_Ctl
+            base_parameters:
+              catalog: oh_apm_stg
+              received_date: 2024-04-02
+              Clng_Month_Gap: "-120"
+              EDW_CtlLog: EDW_CtlLog_Prov_Staging
+              EDW_CtlLog_tmp: EDW_CtlLog_Prov_tmp
+              schema_name: archive_vendor_extracts
+              EDW_CtlLog_hist: EDW_CtlLog_Historic
+              s3_location: s3://gia-stg-oh-ue1-data-raw/haven/inbound/VE_EDW/weekly/dt=
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: Vldtn_Issue_Status
+          depends_on:
+            - task_key: ETL_Prov_Analytics
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Provider/ValidationScripts/EDW_ETL_IssueStatus_Prov
+            base_parameters:
+              catalog: oh_apm_stg
+              schema_name: archive_vendor_extracts
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: Vldtn_MustRqrd_Fields
+          depends_on:
+            - task_key: ETL_Prov_Analytics
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Provider/ValidationScripts/EDW_ETL_MustRqrdFlds_Prov
+            base_parameters:
+              catalog: oh_apm_stg
+              schema_name: archive_vendor_extracts
+              EDW_TblNm: EDW_temp_Provider_Analytics
+              BIAR_TblNm117: BIAR_ven117fa
+              EDW_TblNm117: EDW_temp_ven117fa
+              BIAR_TblNm: BIAR_Provider_Analytics
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: Vldtn_SmmryCnt_VE_CTL
+          depends_on:
+            - task_key: ETL_Prov_Load_VE_CTL
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Provider/ValidationScripts/EDW_ETL_SumCnts_Prov_VE
+            base_parameters:
+              catalog: oh_apm_stg
+              schema_name: archive_vendor_extracts
+              EDW_CtlLog: EDW_CtlLog_Prov_Staging
+            source: GIT
+          job_cluster_key: Job_cluster
+        - task_key: Vldtn_SmmryCnts
+          depends_on:
+            - task_key: ETL_Prov_Analytics
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/ETL_Provider/ValidationScripts/EDW_ETL_SumCnts_Prov
+            base_parameters:
+              catalog: oh_apm_stg
+              schema_name: archive_vendor_extracts
+              EDW_TblNm: EDW_temp_Provider_Analytics
+              EDW_TblNm117: EDW_temp_ven117fa
+              schema_name_cmc: cmc
+            source: GIT
+          job_cluster_key: Job_cluster
+      job_clusters:
+        - job_cluster_key: Job_cluster
+          new_cluster:
+            cluster_name: ""
+            spark_version: 11.3.x-scala2.12
+            spark_conf:
+              spark.databricks.driver.ipykernel.commChannelEnabled: "False"
+            aws_attributes:
+              first_on_demand: 1
+              availability: SPOT_WITH_FALLBACK
+              zone_id: auto
+              instance_profile_arn: arn:aws:iam::721214004216:instance-profile/gia-stg-oh-ue1-data-ec2role
+              spot_bid_price_percent: 100
+              ebs_volume_count: 0
+            node_type_id: m5dn.4xlarge
+            custom_tags:
+              Company: gainwell technologies
+              Env: stage
+              Aws_Account_Number: "721214004216"
+              Email: support-gia-de@mygainwell.onmicrosoft.com
+              Tenant: oh_haven
+              Team: gia-de
+              Project: gia
+              Infra_Service: fbae79be939839d0ca737f4badba10d8
+              Product: analytics
+              App_Service: 3401e33d9367e5508cf7324e1dba1059
+              Aws_Region: us-east-1
+            enable_elastic_disk: true
+            policy_id: 0019F7C702C5E025
+            data_security_mode: SINGLE_USER
+            runtime_engine: STANDARD
+            autoscale:
+              min_workers: 2
+              max_workers: 20
+      git_source:
+        git_url: https://Haven-Analytics@dev.azure.com/Haven-Analytics/SOH_Haven/_git/APM
+        git_provider: azureDevOpsServices
+        git_branch: stage

@@ -1,0 +1,235 @@
+# Databricks notebook source
+#************************************************************************************************************************************
+#*                                                                                                                                  *
+#*   NOTEBOOK:     Elig_PartO_CompareTwoAnalyticsTables.                                                                            *
+#*                                                                                                                                  *
+#*   DESCRIPTION:                                                                                                                   *
+#*                                                                                                                                  *
+#*                                                                                                                                  *
+#*   INPUT PARMS:                                                                                                                   *
+#*                                                                                                                                  *
+#*                                                                                                                                  *
+#*   INPUT FILES:                                                                                                                   *
+#*                                                                                                                                  *
+#*                                                                                                                                  *
+#*   OUTPUT FILE:                                                                                                                   *
+#*                                                                                                                                  *
+#*   EXITS:       0 - success                                                                                                       *
+#*                <> 0 - failure                                                                                                    *
+#*                                                                                                                                  *
+#************************************************************************************************************************************
+#*                                                                                                                                  *
+#*                                                 Modification Log                                                                 *
+#*                                                                                                                                  *
+#*    Date     CO                 Author              Description                                                                   *
+#* ---------- ------------------  -----------------   ------------------------------------------------------------------------------*
+#* 11/04/2025 CCRB70930/CO#43342  Jaime Zavala        Initial Release.                                                              *
+#* 11/17/2025 CCRB70930/CO#43342  Jaime Zavala        Modified to met QA's Spreadsheet.                                             *
+#************************************************************************************************************************************
+
+
+# COMMAND ----------
+
+#-----------
+# DBX Parms
+#-----------
+dbutils.widgets.text('catalog', 'oh_apm_stg')  
+dbutils.widgets.text('schema_name', 'etl_qa')  
+
+#-------------
+#  Tables
+#-------------
+
+dbutils.widgets.text('DiffAnlysTblNm', 'EligAnlytcs_Part_O_DiffAnlys')
+dbutils.widgets.text('PrevTblNm', 'Eligibility_Analytics_Previous')
+dbutils.widgets.text('CurntTblNm', 'Eligibility_Analytics_Current')
+
+#-------------------
+# Getters Section
+#-------------------
+catalog     = dbutils.widgets.get('catalog')
+schema_name = dbutils.widgets.get('schema_name')
+DiffAnlysTblNm = dbutils.widgets.get('DiffAnlysTblNm')
+CurntTblNm = dbutils.widgets.get('CurntTblNm')
+PrevTblNm = dbutils.widgets.get('PrevTblNm')
+
+
+#---------------
+# Print Section
+#---------------
+print("catalog:", catalog)
+print("schema:", schema_name)
+print("Diff Analysis Table Name:", DiffAnlysTblNm)
+print("Current Table Name:", CurntTblNm)
+print("Previous Table Name:", PrevTblNm)
+
+
+# COMMAND ----------
+
+# DBTITLE 1,Part Specs
+# MAGIC
+# MAGIC %sql
+# MAGIC create or replace table ${catalog}.${schema_name}.${DiffAnlysTblNm} AS 
+# MAGIC SELECT 
+# MAGIC     -- Common identifiers
+# MAGIC      COALESCE(PrevTbl.ID_MEDICAID1, CurntTbl.ID_MEDICAID1) AS ID_MEDICAID1          -- This is the common identifier
+# MAGIC     ,COALESCE(PrevTbl.O_DTE_EFFECTIVE, CurntTbl.O_DTE_EFFECTIVE) AS O_DTE_EFFECTIVE -- This is the common identifier
+# MAGIC 	-- None Compare Fileds
+# MAGIC     ,CASE WHEN PrevTbl.Derived1                  != CurntTbl.Derived1                  THEN PrevTbl.Derived1                  ELSE NULL END AS PrevTbl_Derived1     -- REPORT_DTE
+# MAGIC     ,CASE WHEN PrevTbl.Derived1                  != CurntTbl.Derived1                  THEN CurntTbl.Derived1                 ELSE NULL END AS CurntTbl_Derived1
+# MAGIC     -- Compare Fields
+# MAGIC     ,CASE WHEN PrevTbl.Derived2                  != CurntTbl.Derived2                  THEN PrevTbl.Derived2                  ELSE NULL END AS PrevTbl_Derived2     -- ENRL_SPAN_TYP
+# MAGIC     ,CASE WHEN PrevTbl.Derived2                  != CurntTbl.Derived2                  THEN CurntTbl.Derived2                 ELSE NULL END AS CurntTbl_Derived2
+# MAGIC     ,CASE WHEN PrevTbl.NUM_CASE                  != CurntTbl.NUM_CASE                  THEN PrevTbl.NUM_CASE                  ELSE NULL END AS PrevTbl_NUM_CASE
+# MAGIC     ,CASE WHEN PrevTbl.NUM_CASE                  != CurntTbl.NUM_CASE                  THEN CurntTbl.NUM_CASE                 ELSE NULL END AS CurntTbl_NUM_CASE
+# MAGIC     ,CASE WHEN PrevTbl.O_DTE_END                 != CurntTbl.O_DTE_END                 THEN PrevTbl.O_DTE_END                 ELSE NULL END AS PrevTbl_O_DTE_END
+# MAGIC     ,CASE WHEN PrevTbl.O_DTE_END                 != CurntTbl.O_DTE_END                 THEN CurntTbl.O_DTE_END                ELSE NULL END AS CurntTbl_O_DTE_END
+# MAGIC     ,CASE WHEN PrevTbl.O_IND_SNP                 != CurntTbl.O_IND_SNP                 THEN PrevTbl.O_IND_SNP                 ELSE NULL END AS PrevTbl_O_IND_SNP
+# MAGIC     ,CASE WHEN PrevTbl.O_IND_SNP                 != CurntTbl.O_IND_SNP                 THEN CurntTbl.O_IND_SNP                ELSE NULL END AS CurntTbl_O_IND_SNP
+# MAGIC     ,CASE WHEN PrevTbl.O_TXT_PLAN_NAME           != CurntTbl.O_TXT_PLAN_NAME           THEN PrevTbl.O_TXT_PLAN_NAME           ELSE NULL END AS PrevTbl_O_TXT_PLAN_NAME
+# MAGIC     ,CASE WHEN PrevTbl.O_TXT_PLAN_NAME           != CurntTbl.O_TXT_PLAN_NAME           THEN CurntTbl.O_TXT_PLAN_NAME          ELSE NULL END AS CurntTbl_O_TXT_PLAN_NAME
+# MAGIC            FROM ${catalog}.${schema_name}.${CurntTblNm} CurntTbl
+# MAGIC FULL OUTER JOIN ${catalog}.${schema_name}.${PrevTblNm} PrevTbl ON PrevTbl.ID_MEDICAID1    = CurntTbl.ID_MEDICAID1 
+# MAGIC                                                               AND PrevTbl.O_DTE_EFFECTIVE = CurntTbl.O_DTE_EFFECTIVE
+# MAGIC WHERE 
+# MAGIC        PrevTbl.NUM_CASE                  != CurntTbl.NUM_CASE                  
+# MAGIC     OR PrevTbl.Derived2                  != CurntTbl.Derived2                     
+# MAGIC     OR PrevTbl.O_DTE_END                 != CurntTbl.O_DTE_END                
+# MAGIC     OR PrevTbl.O_IND_SNP                 != CurntTbl.O_IND_SNP                   
+# MAGIC     OR PrevTbl.O_TXT_PLAN_NAME           != CurntTbl.O_TXT_PLAN_NAME
+# MAGIC    AND PrevTbl.O_DTE_EFFECTIVE is not null
+# MAGIC ;
+
+# COMMAND ----------
+
+# DBTITLE 1,Part Count
+# MAGIC %sql
+# MAGIC  select count(*) from ${catalog}.${schema_name}.${DiffAnlysTblNm};
+
+# COMMAND ----------
+
+# DBTITLE 1,Part Data Profile
+# MAGIC %sql
+# MAGIC  select * from ${catalog}.${schema_name}.${DiffAnlysTblNm};
+
+# COMMAND ----------
+
+# DBTITLE 1,Summary Part
+# MAGIC %sql
+# MAGIC WITH
+# MAGIC   Sum_Total AS (
+# MAGIC     SELECT count(*) cntTotal
+# MAGIC     FROM ${catalog}.${schema_name}.${DiffAnlysTblNm}
+# MAGIC     WHERE TRUE 
+# MAGIC   ),
+# MAGIC   Cnt_Derived2 AS (
+# MAGIC     SELECT COUNT(*) AS Diff_Derived2
+# MAGIC     FROM ${catalog}.${schema_name}.${DiffAnlysTblNm}
+# MAGIC     WHERE CurntTbl_Derived2 IS NOT NULL
+# MAGIC        OR PrevTbl_Derived2 IS NOT NULL
+# MAGIC   ),
+# MAGIC   Cnt_NUM_CASE AS (
+# MAGIC     SELECT COUNT(*) AS Diff_NUM_CASE
+# MAGIC     FROM ${catalog}.${schema_name}.${DiffAnlysTblNm}
+# MAGIC     WHERE CurntTbl_NUM_CASE IS NOT NULL
+# MAGIC        OR PrevTbl_NUM_CASE IS NOT NULL
+# MAGIC   ),
+# MAGIC   Cnt_O_DTE_END AS (
+# MAGIC     SELECT COUNT(*) AS Diff_O_DTE_END
+# MAGIC     FROM ${catalog}.${schema_name}.${DiffAnlysTblNm}
+# MAGIC     WHERE CurntTbl_O_DTE_END IS NOT NULL
+# MAGIC        OR PrevTbl_O_DTE_END IS NOT NULL
+# MAGIC   ),
+# MAGIC   Cnt_O_IND_SNP AS (
+# MAGIC     SELECT COUNT(*) AS Diff_O_IND_SNP
+# MAGIC     FROM ${catalog}.${schema_name}.${DiffAnlysTblNm}
+# MAGIC     WHERE CurntTbl_O_IND_SNP IS NOT NULL
+# MAGIC        OR PrevTbl_O_IND_SNP IS NOT NULL
+# MAGIC   ),
+# MAGIC   Cnt_O_TXT_PLAN_NAME AS (
+# MAGIC     SELECT COUNT(*) AS Diff_O_TXT_PLAN_NAME
+# MAGIC     FROM ${catalog}.${schema_name}.${DiffAnlysTblNm}
+# MAGIC     WHERE CurntTbl_O_TXT_PLAN_NAME IS NOT NULL
+# MAGIC        OR PrevTbl_O_TXT_PLAN_NAME IS NOT NULL
+# MAGIC   )
+# MAGIC
+# MAGIC SELECT
+# MAGIC   format_number(t1.Diff_Derived2, 0)                        AS Diff_Derived2,
+# MAGIC   format_number(CASE WHEN t6.cntTotal = 0 THEN 0
+# MAGIC                   ELSE t1.Diff_Derived2 * 100 / t6.cntTotal
+# MAGIC              END, '###.#')                                  AS Pcntg_Derived2,
+# MAGIC   format_number(t2.Diff_NUM_CASE, 0)                        AS Diff_NUM_CASE,
+# MAGIC   format_number(CASE WHEN t6.cntTotal = 0 THEN 0
+# MAGIC                   ELSE t2.Diff_NUM_CASE * 100 / t6.cntTotal
+# MAGIC              END, '###.#')                                  AS Pcntg_NUM_CASE,
+# MAGIC   format_number(t3.Diff_O_DTE_END, 0)                       AS Diff_O_DTE_END,
+# MAGIC   format_number(CASE WHEN t6.cntTotal = 0 THEN 0
+# MAGIC                   ELSE t3.Diff_O_DTE_END * 100 / t6.cntTotal
+# MAGIC              END, '###.#')                                  AS Pcntg_O_DTE_END,
+# MAGIC   format_number(t4.Diff_O_IND_SNP, 0)              AS Diff_O_IND_SNP,
+# MAGIC   format_number(CASE WHEN t6.cntTotal = 0 THEN 0
+# MAGIC                   ELSE t4.Diff_O_IND_SNP * 100 / t6.cntTotal
+# MAGIC              END, '###.#')                                  AS Pcntg_O_IND_SNP,
+# MAGIC   format_number(t5.Diff_O_TXT_PLAN_NAME, 0)                AS Diff_O_TXT_PLAN_NAME,
+# MAGIC   format_number(CASE WHEN t6.cntTotal = 0 THEN 0
+# MAGIC                   ELSE t5.Diff_O_TXT_PLAN_NAME * 100 / t6.cntTotal
+# MAGIC              END, '###.#')                                  AS Pcntg_O_TXT_PLAN_NAME,
+# MAGIC   format_number(t6.cntTotal, 0)                             AS cntTotal
+# MAGIC FROM
+# MAGIC   Cnt_Derived2 t1,
+# MAGIC   Cnt_NUM_CASE t2,
+# MAGIC   Cnt_O_DTE_END t3,
+# MAGIC   Cnt_O_IND_SNP t4,
+# MAGIC   Cnt_O_TXT_PLAN_NAME t5,
+# MAGIC   Sum_Total t6
+# MAGIC ;
+
+# COMMAND ----------
+
+# DBTITLE 1,Total Counts
+# MAGIC %sql
+# MAGIC WITH
+# MAGIC   Match_Counts AS (
+# MAGIC     SELECT DISTINCT PrevTbl.ID_MEDICAID1
+# MAGIC                    ,PrevTbl.O_DTE_EFFECTIVE 
+# MAGIC           FROM ${catalog}.${schema_name}.${CurntTblNm} CurntTbl
+# MAGIC           JOIN ${catalog}.${schema_name}.${PrevTblNm} PrevTbl ON PrevTbl.ID_MEDICAID1    = CurntTbl.ID_MEDICAID1 
+# MAGIC                                                               AND PrevTbl.O_DTE_EFFECTIVE = CurntTbl.O_DTE_EFFECTIVE
+# MAGIC     WHERE TRUE  
+# MAGIC       AND PrevTbl.O_DTE_EFFECTIVE is not null
+# MAGIC   ),
+# MAGIC   Get_CntsNew_VsOld AS (
+# MAGIC     SELECT COUNT(*) AS CntNew_VsOld
+# MAGIC     FROM ${catalog}.${schema_name}.${CurntTblNm} CurntTbl
+# MAGIC     WHERE TRUE
+# MAGIC       AND CurntTbl.O_DTE_EFFECTIVE is not null
+# MAGIC       AND NOT EXISTS
+# MAGIC        (
+# MAGIC         SELECT 1
+# MAGIC           FROM Match_Counts t1
+# MAGIC          WHERE TRUE 
+# MAGIC            AND CurntTbl.ID_MEDICAID1    = t1.ID_MEDICAID1
+# MAGIC            AND CurntTbl.O_DTE_EFFECTIVE = t1.O_DTE_EFFECTIVE
+# MAGIC        )
+# MAGIC   ),
+# MAGIC   Get_CntsOld_VsNew AS (
+# MAGIC     SELECT COUNT(*) AS CntOld_VsNew
+# MAGIC     FROM ${catalog}.${schema_name}.${PrevTblNm} PrevTbl
+# MAGIC     WHERE TRUE
+# MAGIC        AND PrevTbl.O_DTE_EFFECTIVE is not null
+# MAGIC       AND NOT EXISTS
+# MAGIC        (
+# MAGIC         SELECT 1
+# MAGIC           FROM Match_Counts t4
+# MAGIC          WHERE TRUE 
+# MAGIC            AND PrevTbl.ID_MEDICAID1    = t4.ID_MEDICAID1
+# MAGIC            AND PrevTbl.O_DTE_EFFECTIVE = t4.O_DTE_EFFECTIVE
+# MAGIC        )
+# MAGIC   )
+# MAGIC SELECT DISTINCT format_number((SELECT COUNT(*) FROM Match_Counts), 0) AS TotalMatch
+# MAGIC      , format_number(t2.CntNew_VsOld, 0) AS RecordsNewVsOld
+# MAGIC      , format_number(t3.CntOld_VsNew, 0) AS RecordsOldVsNew
+# MAGIC   FROM Match_Counts t1
+# MAGIC      , Get_CntsNew_VsOld t2
+# MAGIC      , Get_CntsOld_VsNew t3
+# MAGIC ;

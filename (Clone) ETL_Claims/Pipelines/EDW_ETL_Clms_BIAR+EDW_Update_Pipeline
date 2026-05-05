@@ -1,0 +1,79 @@
+resources:
+  jobs:
+    EDW_ETL_Clms_BIAR_EDW_Update_Job:
+      name: EDW ETL Clms BIAR+EDW Update Job
+      tasks:
+        - task_key: EDW_ETL_Clms_BIAR_EDW_Update
+          notebook_task:
+            notebook_path: EDW_ETL/Refactor/MyUtils_EDW_ETL/Update_BIAR+EDW_Process
+            base_parameters:
+              EdwTmp_InstCl_Old: EDW_temp_cl_inst_20230127_old
+              EdwTmp_InstAnlytcs: EDW_temp_Inst_Analytics
+              EdwTmp_MedCl_Onwards: EDW_temp_cl_med_20230127_onwards
+              catalog: oh_apm_stg
+              EdwTmp_MedAnlytcs_Old: EDW_temp_Med_Analytics_20230127_old
+              EdwTmp_MedAnlytcs_Onwards: EDW_temp_Med_Analytics_20230127_onwards
+              DxPxAnlytcs: DiagSurgProcValCodes_Analytics
+              PharCl: cl_phar
+              EdwTmp_MedCl: EDW_temp_cl_Med
+              MedAnlytcs: Med_Analytics
+              EdwTmp_PharAnlytcs_Onwards: EDW_temp_Phar_Analytics_20230127_onwards
+              EdwTmp_PharAnlytcs_Old: EDW_temp_Phar_Analytics_20230127_old
+              PharAnlytcs: Phar_Analytics
+              MedCl: cl_Med
+              schema_name: vendor_extracts
+              EdwTmp_PharAnlytcs: EDW_temp_phar_Analytics
+              EdwTmp_MedCl_Old: EDW_temp_cl_med_20230127_old
+              EdwTmp_PharCl_Old: EDW_temp_cl_Phar_20230127_old
+              EdwTmp_InstCl: EDW_temp_cl_Inst
+              EdwTmp_MedAnlytcs: EDW_temp_Med_Analytics
+              InstCl: cl_Inst
+              EdwTmp_DxPxAnlytcs_Onwards: EDW_temp_DiagSurgProcValCodes_Analytics_20230127_onwards
+              EdwTmp_InstCl_Onwards: EDW_temp_cl_inst_20230127_onwards
+              InstAnlytcs: Inst_Analytics
+              EdwTmp_PharCl_Onwards: EDW_temp_cl_Phar_20230127_onwards
+              EdwTmp_DxPxAnlytcs_Old: EDW_temp_DiagSurgProcValCodes_Analytics_20230127_old
+              EdwTmp_DxPxAnlytcs: EDW_temp_DiagSurgProcValCodes_Analytics
+              EdwTmp_InstAnlytcs_Old: EDW_temp_Inst_Analytics_20230127_old
+              EdwTmp_PharCl: EDW_temp_cl_phar
+              EdwTmp_InstAnlytcs_Onwards: EDW_temp_Inst_Analytics_20230127_onwards
+            source: GIT
+          job_cluster_key: Job_cluster
+      job_clusters:
+        - job_cluster_key: Job_cluster
+          new_cluster:
+            cluster_name: ""
+            spark_version: 11.3.x-scala2.12
+            spark_conf:
+              spark.databricks.driver.ipykernel.commChannelEnabled: "False"
+            aws_attributes:
+              first_on_demand: 1
+              availability: SPOT_WITH_FALLBACK
+              zone_id: auto
+              instance_profile_arn: arn:aws:iam::721214004216:instance-profile/gia-stg-oh-ue1-data-ec2role
+              spot_bid_price_percent: 100
+              ebs_volume_count: 0
+            node_type_id: m5dn.4xlarge
+            custom_tags:
+              Company: gainwell technologies
+              Env: stage
+              Aws_Account_Number: "721214004216"
+              Email: support-gia-de@mygainwell.onmicrosoft.com
+              Tenant: oh_haven
+              Team: gia-de
+              Project: gia
+              Infra_Service: fbae79be939839d0ca737f4badba10d8
+              Product: analytics
+              App_Service: 3401e33d9367e5508cf7324e1dba1059
+              Aws_Region: us-east-1
+            enable_elastic_disk: true
+            policy_id: 0019F7C702C5E025
+            data_security_mode: SINGLE_USER
+            runtime_engine: STANDARD
+            autoscale:
+              min_workers: 2
+              max_workers: 20
+      git_source:
+        git_url: https://dev.azure.com/Haven-Analytics/SOH_Haven/_git/APM
+        git_provider: azureDevOpsServices
+        git_branch: stage
